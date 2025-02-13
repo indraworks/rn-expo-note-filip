@@ -1,12 +1,13 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import Home from "./src/screens/Home";
+import { StyleSheet, SafeAreaView } from "react-native";
+import { ActivityHomeScreen } from "./src/screens/Home";
+
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Home />
+    <SafeAreaView style={styles.container}>
+      <ActivityHomeScreen />
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -18,3 +19,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+/*
+pada app.js view kita hilangkan ganti 
+denfan SafeAreaView mewakili batas2 
+
+*/
