@@ -1,10 +1,11 @@
 import React from "react";
 import { View, Text } from "react-native";
+import { COLORS } from "../../variables/styles";
 
 export const ActivityItem = ({ title }) => {
   return (
     <View>
-      <Text>{title}</Text>
+      <Text style={{ color: COLORS.white }}>{title}</Text>
     </View>
   );
 };
