@@ -1,11 +1,12 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { COLORS } from "../../variables/styles";
+import { FlowText } from "../overrides";
 
 export const ActivityItem = ({ title }) => {
   return (
     <View>
-      <Text style={{ color: COLORS.white }}>{title}</Text>
+      <FlowText>{title}</FlowText>
     </View>
   );
 };
