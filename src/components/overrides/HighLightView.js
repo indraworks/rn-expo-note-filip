@@ -8,5 +8,14 @@ export const FlowHighLightView = ({ children, style }) => {
 const styles = StyleSheet.create({
   view: {
     backgroundColor: COLORS.darkGray,
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 10,
   },
 });
+
+/*
+kit abuat border 10 
+
+
+*/

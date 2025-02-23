@@ -1,13 +1,13 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { StyleSheet } from "react-native";
 import { COLORS } from "../../variables/styles";
-import { FlowText } from "../overrides";
+import { FlowText, FlowHighLightView } from "../overrides";
 
 export const ActivityItem = ({ title }) => {
   return (
-    <View>
+    <FlowHighLightView style={StyleSheet.itemContainer}>
       <FlowText>{title}</FlowText>
-    </View>
+    </FlowHighLightView>
   );
 };
 
@@ -17,3 +17,10 @@ karena kita akan gunakan sebagi re-use component pada screen
 
 
 */
+
+const styles = StyleSheet.create({
+  itemContainer: {
+    marginBottom: 6,
+    paddingVertical: 19,
+  },
+});

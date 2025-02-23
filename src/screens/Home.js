@@ -4,8 +4,10 @@ import { ActivityItem } from "../components/activity/Item";
 import data from "../data/activities.json";
 import { COLORS } from "../variables/styles";
 import { FlowText } from "../components/overrides";
+import { useState } from "react";
 
 export const ActivityHomeScreen = () => {
+  const [values, setValues] = useState("");
   return (
     <View style={styles.screenContainer}>
       <ActivityTimer></ActivityTimer>

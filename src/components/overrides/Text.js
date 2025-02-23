@@ -19,5 +19,6 @@ nah chidlren adalah prop utk compoennt anak!
 2 styles digabungkan dalam object sprti inipakemnya :
 {...styles.text,...style}
 
-
+styles.text adalah default
+ utk ..style adalah props dari parent ( utk styling punya parent yg berubah)
 */
