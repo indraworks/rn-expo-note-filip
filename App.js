@@ -8,7 +8,7 @@ export default function App() {
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
         <ActivityHomeScreen />
-        <StatusBar style="auto" />
+        <StatusBar style="light" />
       </View>
     </SafeAreaView>
   );

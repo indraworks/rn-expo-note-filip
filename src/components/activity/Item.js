@@ -1,13 +1,47 @@
-import React from "react";
-import { StyleSheet } from "react-native";
+import React, { useRef } from "react";
+import { Animated, PanResponder, StyleSheet } from "react-native";
 import { COLORS } from "../../variables/styles";
-import { FlowText, FlowHighLightView } from "../overrides";
+import { FlowText, FlowHighLightView, FlowRow } from "../overrides";
 
 export const ActivityItem = ({ title }) => {
+  const pan = useRef(new Animated.ValueXY()).current; //menetapkan ref animasi daam variable pan
+  //dimana utk tentukan arah x ,arah y waktu move!
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true, //create triger function respon start
+      // ini func utk start jika ada element di klik etc
+      onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
+        useNativeDriver: false,
+      }),
+      //ini func utk waktu releasse stalh drag drop
+      onPanResponderRelease: () => {
+        pan.extractOffset;
+      },
+    })
+  ).current;
+
   return (
-    <FlowHighLightView style={StyleSheet.itemContainer}>
-      <FlowText>{title}</FlowText>
-    </FlowHighLightView>
+    //wajib bungkus dngn animated view
+    //kita masukan variable /propsnya panResponderke Animated.View compoenent>
+    <Animated.View
+      {...panResponder.panHandlers}
+      //transform hanya arah x saja
+      style={{
+        //ktika dklik gak boleh ada action
+        touchAction: "none",
+        //ktika ada dibagian text,di ignore textnya jadi bisa move
+        useSelect: "none",
+        transform: [{ translateX: pan.x }],
+      }}
+    >
+      <FlowHighLightView style={StyleSheet.itemContainer}>
+        <FlowRow style={styles.row}>
+          <FlowText>{title}</FlowText>
+          <FlowText style={styles.time}>00:00:00</FlowText>
+        </FlowRow>
+      </FlowHighLightView>
+    </Animated.View>
   );
 };
 
@@ -23,4 +57,17 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     paddingVertical: 19,
   },
+  row: {
+    justifyContent: "space-between",
+    paddingHorizontal: 6,
+  },
+  time: {
+    color: COLORS.brightGreen,
+  },
 });
+
+/*PanResponder :ini adalah aninamated utk drag dan drop dari core react-native
+kalau kita pake panGestureHandler ini lebih modern utk yabg ini kita pake yg panResponder!
+
+
+*/

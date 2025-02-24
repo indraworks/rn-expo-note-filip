@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { FlowHighLightView, FlowRow, FlowText } from "../overrides";
+import { COLORS } from "../../variables/styles";
 
 export const ActivityTimer = () => {
   return (
@@ -9,7 +10,7 @@ export const ActivityTimer = () => {
         <FlowText> No Activities</FlowText>
       </FlowRow>
       <FlowRow style={styles.row}>
-        <FlowText>00:00:00</FlowText>
+        <FlowText style={styles.time}>00:00:00</FlowText>
       </FlowRow>
     </FlowHighLightView>
   );
@@ -17,11 +18,15 @@ export const ActivityTimer = () => {
 
 const styles = StyleSheet.create({
   timeContainer: {
-    height: 70,
+    // height: 70,
     marginVertical: 10,
   },
   row: {
     justifyContent: "center",
+  },
+  time: {
+    color: COLORS.brightGreen,
+    marginTop: 4,
   },
 });
 

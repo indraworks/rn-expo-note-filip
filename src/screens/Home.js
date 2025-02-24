@@ -11,6 +11,7 @@ export const ActivityHomeScreen = () => {
   return (
     <View style={styles.screenContainer}>
       <ActivityTimer></ActivityTimer>
+
       <View style={styles.listHeading}>
         <FlowText style={styles.text}>Activities</FlowText>
         <FlowText style={styles.text}>Add</FlowText>
@@ -34,11 +35,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingVertical: 10,
+    marginHorizontal: 5,
   },
   text: {
     fontSize: 17,
     fontWeight: "bold",
     color: COLORS.white,
+    paddingHorizontal: 15,
   },
 });
 
