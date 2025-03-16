@@ -7,7 +7,12 @@ import { FlowText } from "../components/overrides";
 import { useState } from "react";
 
 export const ActivityHomeScreen = () => {
-  const [values, setValues] = useState("");
+  //buat function checkActivity
+  //ingat kalau di js kita gak perlu buat interface
+  const checkActivity = ({ id, state }) => {
+    console.log(`changing ${id} to active state : ${state}`);
+  };
+
   return (
     <View style={styles.screenContainer}>
       <ActivityTimer></ActivityTimer>
@@ -19,7 +24,9 @@ export const ActivityHomeScreen = () => {
       <FlatList
         data={data}
         keyExtractor={({ id }) => id}
-        renderItem={({ item }) => <ActivityItem title={item.title} />}
+        renderItem={({ item }) => (
+          <ActivityItem {...item} onActivityChange={checkActivity} />
+        )}
       />
     </View>
   );
@@ -44,6 +51,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
 });
+
+/*
+catatan :utk data parameter kita masukan ke component <activittItem  /> dalam hal ini adalah item 
+yg mewakili represntasi data tsb shingga nnti bisa jadi item.id item.name dll pada saat berada
+di anak component! 
+<ActivityItem title={item.title} />}
+kita ganti menjadi <ActivitiItem {...item} />
+
+nah pada activity item.ts 
+yaitu functuon paramnya disini langsung kita pecah /destryct ...utem param dari Home.js tsb 
+yaitu :
+const ActivityItem =({title,id,isActivity,time,onActivityChange }) 
+sprti kita tahu kalau geser kanan maka nnti kita activkan state /isActivite adalah true 
+yg geser kiri kita adikan state = false 
+sbb: 
+ if (currentX > TRESHOLD) {
+          onActivityChange(state:true)
+        }
+
+        if (currentX < TRESHOLD) {
+          onActivityChange(state:false)
+        }
+
+
+*/
 
 /*
 kita akan buat list heding dgn flex jadi dibaawah timer ada 

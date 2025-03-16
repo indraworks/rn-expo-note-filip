@@ -5,7 +5,7 @@ import { COLORS } from "./src/variables/styles";
 
 export default function App() {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.saContainer}>
       <View style={styles.container}>
         <ActivityHomeScreen />
         <StatusBar style="light" />
@@ -21,6 +21,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
+  },
+  saContainer: {
+    flex: 1,
+    padding: 20,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 /*

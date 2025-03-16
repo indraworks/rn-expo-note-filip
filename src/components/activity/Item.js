@@ -3,20 +3,50 @@ import { Animated, PanResponder, StyleSheet } from "react-native";
 import { COLORS } from "../../variables/styles";
 import { FlowText, FlowHighLightView, FlowRow } from "../overrides";
 
-export const ActivityItem = ({ title }) => {
+export const ActivityItem = ({ title, onActivityChange, id }) => {
   const pan = useRef(new Animated.ValueXY()).current; //menetapkan ref animasi daam variable pan
   //dimana utk tentukan arah x ,arah y waktu move!
+  const TRESHOLD = 60;
 
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true, //create triger function respon start
       // ini func utk start jika ada element di klik etc
-      onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
-        useNativeDriver: false,
-      }),
+      //dibagian move fucnt kita masukan arg event,gesture
+      //utk param event dan gesture ,gesture ini meraba kedudukan2 movement
+      //spanjang x atau y dgn variable dx atau dy
+      //sedangkan utk evernt dia meraba apa yg jadikan suatu action agar pindah
+      onPanResponderMove: (event, gestureState) => {
+        //kita bisa gunakan console.log utk check pada saat di move kekanan kekiri nilai2 dx!
+        //jadi kita diatas buat const tresheold  const TRESHOLD =60 kira2 saja
+        //console.log(gestureState.dx); //ini kita comment saja
+        //nah kita buat if utk jka  dx > trheshold yaitu geset kanan maka timer akan active
+        //jika digeset kekiiri maka timer akan berhenti
+        const currentX = gestureState.dx;
+        if (currentX > TRESHOLD) {
+          //console.log("ACTIVATE TIMER"); kita ganti dgn props
+          onActivityChange({ id, state: true }); //kita pakai props kita panggil function checkActivity
+        }
+
+        if (currentX < TRESHOLD) {
+          //console.log("DE-ACTIVATE TIMER");
+          onActivityChange({ id, state: false }); //kita pakai props kita panggil function checkActivity
+        }
+
+        Animated.event([null, { dx: pan.x, dy: pan.y }], {
+          useNativeDriver: false,
+        })(event, gestureState);
+      },
+      onPanResponderTerminationRequest: () => false,
+
       //ini func utk waktu releasse stalh drag drop
       onPanResponderRelease: () => {
-        pan.extractOffset;
+        //pan.extractOffset;
+        //utk relesae ke posisi reset maka dibutuhkan animated.spring func
+        Animated.spring(pan, {
+          toValue: { x: 0, y: 0 },
+          useNativeDriver: false,
+        }).start();
       },
     })
   ).current;
@@ -44,6 +74,12 @@ export const ActivityItem = ({ title }) => {
     </Animated.View>
   );
 };
+/*
+
+
+
+
+*/
 
 /*
 yg item sekarang kita ganti ada props masuk 
@@ -69,5 +105,12 @@ const styles = StyleSheet.create({
 /*PanResponder :ini adalah aninamated utk drag dan drop dari core react-native
 kalau kita pake panGestureHandler ini lebih modern utk yabg ini kita pake yg panResponder!
 
+utk bagian move panResponder sbb:
+onPanResponderMove: Animated.event([null, { dx: pan.x }], {
+        useNativeDriver: false,
+      }),
+ nah diatas kita mau masukan 
+ utk param event dan gesture ,gesture ini meraba kedudukan2 movement 
+ sedangkan utk evernt dia meraba apa yg jadikan suatu action agar pindah 
 
 */
