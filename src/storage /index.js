@@ -45,4 +45,32 @@ const loadDayFlowItems = async () => {
   return loadData("storeDayFlowItems");
 };
 
+//Ada tambahan utk pertama kali loading di APp.js kita taruh utk chgeck apakah function AsyncStorage
+//keterangna dibawah :
+
+export const isAsyncStorageEnabled = async () => {
+  try {
+    await AsyncStorage.setItem("flowTestKey", "TestValue");
+    await AsyncStorage.getItem("FlowTestKey");
+    return true;
+  } catch (error) {
+    console.log("Storage is not enabled :", error);
+    return false;
+  }
+};
+
 export { saveData, loadData, storeDayFlowItems, loadDayFlowItems };
+
+/*
+Ada tambahan utk pertama kali loading di APp.js kita taruh utk chgeck apakah function AsyncStorage 
+ini sudah bekerja atau enable sifat rerurn adalah true jadi kita tesrt dng setItem key value 
+nah stlahnya kita getItem lagi sehingga nnti jika dapat maka nilai true 
+nah nilai true ini akan mnjadikan Async bekerja dan kita ke Halamaan Compoennt ActivityHomeSCreen
+
+nah jika false gak bisa maka RN blum atau hanya tampilkan screen kosong saja 
+jadi awal mulua nnti
+
+
+
+
+*/
