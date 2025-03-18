@@ -3,10 +3,10 @@ import { Animated, PanResponder, StyleSheet } from "react-native";
 import { COLORS } from "../../variables/styles";
 import { FlowText, FlowHighLightView, FlowRow } from "../overrides";
 
+const TRESHOLD = 60;
 export const ActivityItem = ({ title, onActivityChange, id }) => {
   const pan = useRef(new Animated.ValueXY()).current; //menetapkan ref animasi daam variable pan
   //dimana utk tentukan arah x ,arah y waktu move!
-  const TRESHOLD = 60;
 
   const panResponder = useRef(
     PanResponder.create({

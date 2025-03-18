@@ -1,9 +1,11 @@
 import { FlatList, StyleSheet, View, Text } from "react-native";
 import { ActivityTimer } from "../components/activity/Timer";
 import { ActivityItem } from "../components/activity/Item";
+import data from "../data/activities.json";
+//baut copian source utk default jika data tidak ada
 import defaultItems from "../data/activities.json";
-
-import { FlowRow, FlowText } from "../components/overrides";
+import { COLORS } from "../variables/styles";
+import { FlowText } from "../components/overrides";
 import { useEffect, useState } from "react";
 import { loadDayFlowItems } from "../storage ";
 
@@ -34,7 +36,7 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
 
     //console.log(`changing ${id} to active state : ${state}`);
     setActivities((activities) => {
-      const candidateIdx = activities.findIndex((a) => a.id === id);
+      const candidateIdx = activities.findIndex((a) => a === id);
 
       //jika item digeser kekanan
       if (candidateIdx > -1) {
@@ -44,10 +46,7 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
           a.id === id ? { ...a, isActive: state } : { ...a, isActive: false }
         );
         //tampilkan di log item y active /isACtive=true
-        console.log(
-          "state items saat ini=",
-          JSON.stringify(newActivities.map((a) => a.isActive))
-        );
+        console.log(JSON.stringify(newActivities.map((a) => a.isActive)));
         return newActivities;
       }
       return activities;
@@ -57,11 +56,13 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   return (
     <View style={styles.screenContainer}>
       <ActivityTimer></ActivityTimer>
-      <FlowRow style={styles.listHeading}>
+
+      <View style={styles.listHeading}>
         <FlowText style={styles.text}>Activities</FlowText>
         <FlowText style={styles.text}>Add</FlowText>
-      </FlowRow>
+      </View>
       <FlatList
+        //datanya diganti dgn activities!krn nilai darinya adalah hasil state yg berubah!
         data={activities}
         keyExtractor={({ id }) => id}
         renderItem={({ item }) => (
@@ -78,11 +79,49 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   listHeading: {
+    display: "flex",
+    flexDirection: "row",
     justifyContent: "space-between",
     paddingVertical: 10,
+    marginHorizontal: 5,
   },
   text: {
     fontSize: 17,
     fontWeight: "bold",
+    color: COLORS.white,
+    paddingHorizontal: 15,
   },
 });
+
+/*
+catatan :utk data parameter kita masukan ke component <activittItem  /> dalam hal ini adalah item 
+yg mewakili represntasi data tsb shingga nnti bisa jadi item.id item.name dll pada saat berada
+di anak component! 
+<ActivityItem title={item.title} />}
+kita ganti menjadi <ActivitiItem {...item} />
+
+nah pada activity item.ts 
+yaitu functuon paramnya disini langsung kita pecah /destryct ...utem param dari Home.js tsb 
+yaitu :
+const ActivityItem =({title,id,isActivity,time,onActivityChange }) 
+sprti kita tahu kalau geser kanan maka nnti kita activkan state /isActivite adalah true 
+yg geser kiri kita adikan state = false 
+sbb: 
+ if (currentX > TRESHOLD) {
+          onActivityChange(state:true)
+        }
+
+        if (currentX < TRESHOLD) {
+          onActivityChange(state:false)
+        }
+
+
+*/
+
+/*
+kita akan buat list heding dgn flex jadi dibaawah timer ada 
+2 button nntinya kiri kanan 
+kit aberi nama utk wrap style listHeading
+
+
+*/

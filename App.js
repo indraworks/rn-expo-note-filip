@@ -4,7 +4,6 @@ import { ActivityHomeScreen } from "./src/screens/Home";
 import { COLORS } from "./src/variables/styles";
 import { useEffect, useState } from "react";
 import { isAsyncStorageEnabled } from "./src/storage ";
-import { isEnabled } from "react-native/Libraries/Performance/Systrace";
 
 export default function App() {
   const [isStorageEnabled, setIsStorageEnable] = useState(null);
@@ -19,13 +18,14 @@ export default function App() {
     };
     checkStorage();
   }, []);
+
   return (
     <SafeAreaView style={styles.saContainer}>
       <View style={styles.container}>
         {isStorageEnabled == null ? (
           <></>
         ) : (
-          <ActivityHomeScreen isStorageEnabled={isEnabled} />
+          <ActivityHomeScreen isStorageEnabled={isStorageEnabled} />
         )}
 
         <StatusBar style="light" />
