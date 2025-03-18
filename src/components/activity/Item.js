@@ -4,7 +4,8 @@ import { COLORS } from "../../variables/styles";
 import { FlowText, FlowHighLightView, FlowRow } from "../overrides";
 
 const TRESHOLD = 60;
-export const ActivityItem = ({ title, onActivityChange, id }) => {
+//activityItem adalah item pada home pada list
+export const ActivityItem = ({ title, onActivityChange, id, isActive }) => {
   const pan = useRef(new Animated.ValueXY()).current; //menetapkan ref animasi daam variable pan
   //dimana utk tentukan arah x ,arah y waktu move!
 
@@ -28,7 +29,7 @@ export const ActivityItem = ({ title, onActivityChange, id }) => {
           onActivityChange({ id, state: true }); //kita pakai props kita panggil function checkActivity
         }
 
-        if (currentX < TRESHOLD) {
+        if (currentX < -TRESHOLD) {
           //console.log("DE-ACTIVATE TIMER");
           onActivityChange({ id, state: false }); //kita pakai props kita panggil function checkActivity
         }
@@ -50,6 +51,10 @@ export const ActivityItem = ({ title, onActivityChange, id }) => {
       },
     })
   ).current;
+  //kita buat disini utk background dimana akan brubah jika isACtive true !
+  const itemBackgroundActive = isActive
+    ? { backgroundColor: COLORS.semiDarkGray }
+    : { backgroundColor: COLORS.darkGray };
 
   return (
     //wajib bungkus dngn animated view
@@ -65,7 +70,10 @@ export const ActivityItem = ({ title, onActivityChange, id }) => {
         transform: [{ translateX: pan.x }],
       }}
     >
-      <FlowHighLightView style={StyleSheet.itemContainer}>
+      <FlowHighLightView
+        //ini tambahan ...itemBackgroundActive akan ubah warna container jika dia bergerak kekakanan warna jadi abu muda!
+        style={{ ...StyleSheet.itemContainer, ...itemBackgroundActive }}
+      >
         <FlowRow style={styles.row}>
           <FlowText>{title}</FlowText>
           <FlowText style={styles.time}>00:00:00</FlowText>
@@ -74,12 +82,6 @@ export const ActivityItem = ({ title, onActivityChange, id }) => {
     </Animated.View>
   );
 };
-/*
-
-
-
-
-*/
 
 /*
 yg item sekarang kita ganti ada props masuk 

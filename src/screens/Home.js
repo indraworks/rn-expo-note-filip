@@ -29,7 +29,8 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
 
   //buat function checkActivity
   //ingat kalau di js kita gak perlu buat interface
-  const checkActivity = ({ id, state }) => {
+  //kita tambakan props isActive  agar nnti background item berubah jika geser kanan jadi patokan utk perubahanya
+  const checkActivity = ({ id, state, isActive }) => {
     //nah utk activities kita harus cari idnya yg sama dgn param props yg masuk di param diatas
 
     //console.log(`changing ${id} to active state : ${state}`);
@@ -37,7 +38,7 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
       const candidateIdx = activities.findIndex((a) => a.id === id);
 
       //jika item digeser kekanan
-      if (candidateIdx > -1) {
+      if (candidateIdx > -1 && activities[candidateIdx].isActive != state) {
         //jika item id yg active sama dgn param id yg msauk maka kita update
         //state item tsb isActivenya,dan yg lainya kita kasih false jika tidak sama dgn item id-nya yg masuk
         const newActivities = activities.map((a) =>
