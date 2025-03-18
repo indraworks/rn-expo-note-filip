@@ -9,12 +9,14 @@ import { FlowText } from "../components/overrides";
 import { useEffect, useState } from "react";
 import { loadDayFlowItems } from "../storage ";
 
-export const ActivityHomeScreen = () => {
+export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   //kita buat statenya  dan nnti state (dalam data yaitu isActivate) ini akan kita simpan
   //  di storage check dulu
   //kondisi state ada apa tidak
   const [activities, setActivities] = useState([]);
   //useEffect adalah func utk kita pakai render jika layar diperbarui
+  //ini param isStrorageEnable hanya utk liatkan di log saja ASyncStorage kita sudah jalan
+  console.log(isStorageEnabled);
   useEffect(() => {
     //check load  function utk tahu apa ada activities sblumya
     const load = async () => {

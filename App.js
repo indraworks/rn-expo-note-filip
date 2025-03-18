@@ -14,6 +14,7 @@ export default function App() {
       //jika isEnabledTrue maka  setisStorageEnable state diatas jadi true
       //dan masukan nnti sbgai param   di component <ActivityHomeScreen!
       const isEnabled = await isAsyncStorageEnabled();
+      console.log("isEnabled =", isEnabled);
       setIsStorageEnable(isEnabled);
     };
     checkStorage();
