@@ -5,7 +5,7 @@ import defaultItems from "../data/activities.json";
 
 import { FlowRow, FlowText } from "../components/overrides";
 import { useEffect, useState } from "react";
-import { loadDayFlowItems } from "../storage ";
+import { loadDayFlowItems, storeDayFlowItems } from "../storage ";
 
 export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   //kita buat statenya  dan nnti state (dalam data yaitu isActivate) ini akan kita simpan
@@ -27,6 +27,14 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
     load();
   }, []);
 
+  //stlah  biasa buat beda item kita store ke async storage
+  const saveToStorage = (data) => {
+    //jika enableStoragenya save data
+    if (isStorageEnabled) {
+      storeDayFlowItems(data);
+    }
+  };
+
   //buat function checkActivity
   //ingat kalau di js kita gak perlu buat interface
   //kita tambakan props isActive  agar nnti background item berubah jika geser kanan jadi patokan utk perubahanya
@@ -45,10 +53,13 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
           a.id === id ? { ...a, isActive: state } : { ...a, isActive: false }
         );
         //tampilkan di log item y active /isACtive=true
-        console.log(
-          "state items saat ini=",
-          JSON.stringify(newActivities.map((a) => a.isActive))
-        );
+        // console.log(
+        //   "state items saat ini=",
+        //   JSON.stringify(newActivities.map((a) => a.isActive))
+        // );
+
+        //saveTOStorage :
+        saveToStorage(newActivities);
         return newActivities;
       }
       return activities;
