@@ -38,7 +38,7 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   //buat function checkActivity
   //ingat kalau di js kita gak perlu buat interface
   //kita tambakan props isActive  agar nnti background item berubah jika geser kanan jadi patokan utk perubahanya
-  const checkActivity = ({ id, state, isActive }) => {
+  const checkActivity = ({ id, state }) => {
     //nah utk activities kita harus cari idnya yg sama dgn param props yg masuk di param diatas
 
     //console.log(`changing ${id} to active state : ${state}`);

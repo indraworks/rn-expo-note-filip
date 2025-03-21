@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { Animated, PanResponder, StyleSheet } from "react-native";
 import { COLORS } from "../../variables/styles";
 import { FlowText, FlowHighLightView, FlowRow } from "../overrides";
+import LoadingDots from "../common/LoadingDots";
 
 const TRESHOLD = 60;
 //activityItem adalah item pada home pada list
@@ -76,7 +77,9 @@ export const ActivityItem = ({ title, onActivityChange, id, isActive }) => {
       >
         <FlowRow style={styles.row}>
           <FlowText>{title}</FlowText>
-          <FlowText style={styles.time}>00:00:00</FlowText>
+          <FlowText style={styles.time}>
+            {isActive ? <LoadingDots /> : <FlowText>00:00:00</FlowText>}
+          </FlowText>
         </FlowRow>
       </FlowHighLightView>
     </Animated.View>
