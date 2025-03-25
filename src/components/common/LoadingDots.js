@@ -15,9 +15,9 @@ adi sprti kedap kedip pindah dari opacity 0 ke 1
 const LoadingDots = () => {
   //nilai value yg dipakai dari reference useREf adalah nilai current dari itu sellau
 
-  const dot1Opacity = useRef(new Animated.Value(0)).current;
-  const dot2Opacity = useRef(new Animated.Value(0)).current;
-  const dot3Opacity = useRef(new Animated.Value(0)).current;
+  // const dot1Opacity = useRef(new Animated.Value(0)).current;
+  // const dot2Opacity = useRef(new Animated.Value(0)).current;
+  // const dot3Opacity = useRef(new Animated.Value(0)).current;
   //kita ganti diatas jadi btuk array jadi
   //kita mau buat array 3 di fill isi langusng masuk ke variable cojtoh  let a = array(3).fill(1)
   //berartu buat sbuah array index sbnyak 3,dan di isi masing element dgn angka 1
@@ -119,12 +119,15 @@ const LoadingDots = () => {
 
   return (
     <FlowRow>
-      {dotOpacities.map((opacity, index) => {
+      {/* itu =>() tidak bolej kurung kurawal ,kalau kurawal harus return 
+          => return {}
+      */}
+      {dotOpacities.map((opacity, index) => (
         <Animated.View
           key={`dot-${index}`}
           style={{ ...styles.dot, opacity }}
-        />;
-      })}
+        />
+      ))}
     </FlowRow>
 
     // <FlowRow>
