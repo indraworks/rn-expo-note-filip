@@ -4,7 +4,7 @@ import { ActivityItem } from "../components/activity/Item";
 import defaultItems from "../data/activities.json";
 
 import { FlowRow, FlowText } from "../components/overrides";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { loadDayFlowItems, storeDayFlowItems } from "../storage ";
 
 export const ActivityHomeScreen = ({ isStorageEnabled }) => {
@@ -15,6 +15,13 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   //useEffect adalah func utk kita pakai render jika layar diperbarui
   //ini param isStrorageEnable hanya utk liatkan di log saja ASyncStorage kita sudah jalan
   //console.log(isStorageEnabled);
+
+  //kita menset utk nilai detiki /tik dgn useRef
+  const startTimeRef = useRef(0);
+
+  //utk elapse timenya per 100ms
+  const timeRef = useRef(0);
+
   useEffect(() => {
     //check load  function utk tahu apa ada activities sblumya
     const load = async () => {
@@ -26,6 +33,31 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
     //invoke function load tiap kali browser refresh
     load();
   }, []);
+
+  useEffect(() => {
+    //yg jadi awal patokan
+    //saat awal loaded component
+    startTimeRef.current = new Date();
+    //jalankan tick
+    tick();
+  }, []);
+
+  const tick = () => {
+    //curentTIme yg sekarang
+    const currentTime = Date.now();
+    //ada waktu yg sekarang beda saat dgn yg awal saaat loaded component
+    const timeDelta = currentTime - startTimeRef.current;
+    //jika sudah 100ms maka kita ambil
+    //time elapsetimenya
+    if (timeDelta >= 100) {
+      timeRef.current += timeDelta;
+      //kita reset acuan awaltimemnya
+      startTimeRef.current = Date.now();
+    }
+    timeRef.current;
+    console.log(currentTime);
+    requestAnimationFrame(tick);
+  };
 
   //stlah  biasa buat beda item kita store ke async storage
   const saveToStorage = (data) => {
@@ -98,3 +130,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+/*
+kita kaan bermain timer maka di home ini kita bikin tick function yaitu 
+utk ambil detik dan ini 60 ketukan nah 
+jadi untuk timer itu diambil tiap2 100ms nah nilai timer tsb adalah 
+perbedaan selisih saat currentTIme  yang sekarang  yg dijalankan di Funct Tick 
+dengan startTImeRef.current ( nilai awal ref sblm jalankan func tick)
+timeDelta adalah selisih antara nilai awal - nilaiCurentTIme 
+nah jika sudah 100ms maka startTimenya diupdate lagi 
+dijelaskan oleh chat gpt utk catatan pada bab3 
+
+
+*/

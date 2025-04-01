@@ -78,7 +78,11 @@ export const ActivityItem = ({ title, onActivityChange, id, isActive }) => {
         <FlowRow style={styles.row}>
           <FlowText>{title}</FlowText>
           <FlowText style={styles.time}>
-            {isActive ? <LoadingDots /> : <FlowText>00:00:00</FlowText>}
+            {isActive ? (
+              <LoadingDots color={"blue"} />
+            ) : (
+              <FlowText>00:00:00</FlowText>
+            )}
           </FlowText>
         </FlowRow>
       </FlowHighLightView>

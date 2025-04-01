@@ -11,19 +11,19 @@ adi sprti kedap kedip pindah dari opacity 0 ke 1
 
 
 */
+//kita masukan yg tadi opacity,toValue,duration kit abuat jadi param function
+//dan yg Animated.timing kita jadikan function didalam nya !
 
-const LoadingDots = () => {
-  //nilai value yg dipakai dari reference useREf adalah nilai current dari itu sellau
+const createTimingAnim = (opacity, toValue, duration) =>
+  Animated.timing(opacity, {
+    toValue,
+    duration,
+    easing: Easing.ease,
+    useNativeDriver: false,
+  });
 
-  // const dot1Opacity = useRef(new Animated.Value(0)).current;
-  // const dot2Opacity = useRef(new Animated.Value(0)).current;
-  // const dot3Opacity = useRef(new Animated.Value(0)).current;
-  //kita ganti diatas jadi btuk array jadi
-  //kita mau buat array 3 di fill isi langusng masuk ke variable cojtoh  let a = array(3).fill(1)
-  //berartu buat sbuah array index sbnyak 3,dan di isi masing element dgn angka 1
-  //yg imi kita buat Array element 3,diisi dgn angka 0 ( opacirty =0)
-  //nah lantas kita masukan ke useRef agar tak usah lagi render component jika update angka2 ini /variable ini!
-
+const LoadingDots = ({ color }) => {
+  const dotColor = color || COLORS.white;
   const dotOpacities = useRef(
     Array(3)
       .fill(0)
@@ -35,12 +35,7 @@ const LoadingDots = () => {
     //pakai aninated timing dari opacity 0 ke 1 dilambatkan berkesan kedap-kedip
     //yg ini kita ringkas
     const doShowAnimations = dotOpacities.map((opacity) =>
-      Animated.timing(opacity, {
-        toValue: 1,
-        duration: 700,
-        easing: Easing.ease,
-        useNativeDriver: false,
-      })
+      createTimingAnim(opacity, 1, 700)
     );
 
     // const doShowAnimation = [
@@ -70,12 +65,7 @@ const LoadingDots = () => {
 
     //matikan 3 3nya /hide
     const dotHideAnimations = dotOpacities.map((opacity) =>
-      Animated.timing(opacity, {
-        toValue: 0,
-        duration: 500,
-        easing: Easing.ease,
-        useNativeDriver: false,
-      })
+      createTimingAnim(opacity, 0, 500)
     );
 
     // const dotHideAniations = [
@@ -125,7 +115,7 @@ const LoadingDots = () => {
       {dotOpacities.map((opacity, index) => (
         <Animated.View
           key={`dot-${index}`}
-          style={{ ...styles.dot, opacity }}
+          style={{ ...styles.dot, opacity, backgroundColor: dotColor }}
         />
       ))}
     </FlowRow>
@@ -137,11 +127,14 @@ const LoadingDots = () => {
     // </FlowRow>
   );
 };
+//colornya bisa berubah warna kita bisa jadikan props
+//cara nambahkan style yg sudah ada dgn ada poprerty style dari luar sbb
+//yaitu:style={{ ...styles.dot, opacity ,backgroundColor:dotColor}}
 const styles = StyleSheet.create({
   dot: {
-    backgroundColor: COLORS.white,
-    width: 10,
-    height: 10,
+    //backgroundColor: COLORS.brightGreen, --ini kita ganti dgn variable dari luar
+    width: 8,
+    height: 8,
     borderRadius: 5,
     marginHorizontal: 5,
   },
