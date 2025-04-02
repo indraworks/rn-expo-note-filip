@@ -1,32 +1,40 @@
 import { FlatList, StyleSheet, View, Text } from "react-native";
 import { ActivityTimer } from "../components/activity/Timer";
 import { ActivityItem } from "../components/activity/Item";
+//kita kasih alias defaulItems adalah data awal dari json kita !
 import defaultItems from "../data/activities.json";
 
 import { FlowRow, FlowText } from "../components/overrides";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { loadDayFlowItems, storeDayFlowItems } from "../storage ";
+import { usePrevious } from "../utils/Function";
 
 export const ActivityHomeScreen = ({ isStorageEnabled }) => {
-  //kita buat statenya  dan nnti state (dalam data yaitu isActivate) ini akan kita simpan
-  //  di storage check dulu
-  //kondisi state ada apa tidak
   const [activities, setActivities] = useState([]);
-  //useEffect adalah func utk kita pakai render jika layar diperbarui
-  //ini param isStrorageEnable hanya utk liatkan di log saja ASyncStorage kita sudah jalan
-  //console.log(isStorageEnabled);
 
   //kita menset utk nilai detiki /tik dgn useRef
   const startTimeRef = useRef(0);
 
   //utk elapse timenya per 100ms
   const timeRef = useRef(0);
+  //Ref utk timer berhenti
+  const timeRequestRef = useRef(-1);
+
+  //mmbuat funct activeitem  dgn useMEmo dimana prikasa state Activities berubah
+  const activeItem = useMemo(() => {
+    //cari yg lagi active statenya
+    return activities?.find((a) => a.isActive);
+  }, [activities]);
+
+  //mendeclare prevous state ,activeItem dimasukan ke previous
+  //jika nnti ada activeItem yg lain yg masuk kesini sbgai state yg mula2
+  const preActiveItem = usePrevious(activeItem);
 
   useEffect(() => {
     //check load  function utk tahu apa ada activities sblumya
     const load = async () => {
       const items = await loadDayFlowItems();
-      //jika items kosing/data null maka kita isi dgn default items
+      //jika items kosing/data null maka kita isi dgn default items ( data dari json kita)
       items ? setActivities(items) : setActivities(defaultItems);
     };
 
@@ -35,12 +43,35 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   }, []);
 
   useEffect(() => {
-    //yg jadi awal patokan
-    //saat awal loaded component
-    startTimeRef.current = new Date();
-    //jalankan tick
-    tick();
-  }, []);
+    //check apakah activeItem yg sekarang ini sama dgn yg sblumnya?
+    //kita check dari id
+    const isSameItem = activeItem && activeItem?.id === preActiveItem?.id;
+
+    //check activeItem atau state activities berubah
+    if (activeItem) {
+      //jika activeItem != previousItem sblumya
+      if (!isSameItem) {
+        //startTimeRef.current = 0; aslinya startime dibuat zero
+        //tapi pada timer di UI ini harus ada refernce yg sudah ada timernya!
+        //jadi tiap2 item2 yg lain di ui digeserkanan maka dia akan ambil waktu yg udah
+        //ada di storage di tambahkan !
+        timeRef.current = activeItem.time;
+        startTimeRef.current = new Date();
+      }
+
+      tick();
+    } else {
+      //timeRef di reset
+      //jika sama!
+      startTimeRef.current = 0;
+      cancelAnimationFrame(timeRequestRef.current);
+    }
+    return () => {
+      cancelAnimationFrame(timeRequestRef.current);
+    };
+
+    //perubahan useState ini dari activeItem y ebrubah
+  }, [activeItem]);
 
   const tick = () => {
     //curentTIme yg sekarang
@@ -51,12 +82,12 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
     //time elapsetimenya
     if (timeDelta >= 100) {
       timeRef.current += timeDelta;
+      console.log(timeRef.current);
       //kita reset acuan awaltimemnya
       startTimeRef.current = Date.now();
     }
-    timeRef.current;
-    console.log(currentTime);
-    requestAnimationFrame(tick);
+
+    timeRequestRef.current = requestAnimationFrame(tick);
   };
 
   //stlah  biasa buat beda item kita store ke async storage
@@ -130,6 +161,30 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+/*
+improve :
+utk menghentikannya kita ahrus tahu previous state ,nah previouse State ini kan ada dimana ?
+yg kita masukan di previous State adalah activeItem dimana dia jadi yg terdahulu 
+nah nnti ktika kita mengaktifkan activestate yg baru nah ini check activieItem tsb Id nya sama apa gak?
+dgn yg sekarang.
+nah jika tidak sama maka  bla bla  jika sama maka bla bla sprti itu gambarannya ! 
+kita buat di utils/function utk buat functon PreviousState !
+
+*/
+
+/*
+KITA AKAN GUNAKAN useMemoize ketika diaman sbuah state itu berubah baru hook ini akan bekerja
+sehingga gak kerender 2x ,ini supaya mengoptimasi kerja react dan ini juga butuh memori 
+nah tujuannya adalah agar timer tsb akan hanya berkerja jika state activities berubah mis kita geser kanan 
+( active) atau geser kiri (timer stop) 
+ utk yg ini jika kita gerak ke kakan 1 item  maka activities kita check sttenya dan berubah maka timer jalan 
+ dan jik digerakan keikiri yg barus saja item yg kita gerakan kekanan ,maka timer berhenti
+ TETAPI jika suat item digerakan kekakanan dan item lain diatas atau dibawahnya girakan kekanan i
+ timer yg sblumnya dari item lain tidak berHENTI nah masih ada masalah ini yg kita MESTI IMVPrOVE 
+
+
+*/
 
 /*
 kita kaan bermain timer maka di home ini kita bikin tick function yaitu 
