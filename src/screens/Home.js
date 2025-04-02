@@ -11,6 +11,8 @@ import { usePrevious } from "../utils/Function";
 
 export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   const [activities, setActivities] = useState([]);
+  //make state time !
+  const [time, setTime] = useState(0);
 
   //kita menset utk nilai detiki /tik dgn useRef
   const startTimeRef = useRef(0);
@@ -83,6 +85,9 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
     if (timeDelta >= 100) {
       timeRef.current += timeDelta;
       console.log(timeRef.current);
+      //update state time base timeRef.current dan masukan nnti display
+      setTime(timeRef.current);
+
       //kita reset acuan awaltimemnya
       startTimeRef.current = Date.now();
     }
@@ -98,6 +103,17 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
     }
   };
 
+  //buat updateTimeOnActiveItem(activities) utk selalu update
+
+  const updateTimeOnActiveItem = (activities) => {
+    //cari id (index) activities yg saat ini active
+    const activeIdx = activities.findIndex((a) => a.isActive);
+    if (activeIdx > -1) {
+      //isi field waktunya dgn update current ref /waktu sekarang/trkahir
+      activities[activeIdx].time = timeRef.current;
+    }
+  };
+
   //buat function checkActivity
   //ingat kalau di js kita gak perlu buat interface
   //kita tambakan props isActive  agar nnti background item berubah jika geser kanan jadi patokan utk perubahanya
@@ -108,10 +124,12 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
     setActivities((activities) => {
       const candidateIdx = activities.findIndex((a) => a.id === id);
 
-      //jika item digeser kekanan
+      //jika item digeser kekanan dan jika yg geser kekanan juga ada yg baru
+      //jadi kita lagi geser kekakan sudah jalan
+      //kita langsung lakukan geser kanan item lain!
       if (candidateIdx > -1 && activities[candidateIdx].isActive != state) {
-        //jika item id yg active sama dgn param id yg msauk maka kita update
-        //state item tsb isActivenya,dan yg lainya kita kasih false jika tidak sama dgn item id-nya yg masuk
+        //kita update waktunya yg ada taruh di acctivities yg sblumnya yg saat ini terhenti
+        updateTimeOnActiveItem(activities);
         const newActivities = activities.map((a) =>
           a.id === id ? { ...a, isActive: state } : { ...a, isActive: false }
         );
@@ -131,7 +149,7 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
 
   return (
     <View style={styles.screenContainer}>
-      <ActivityTimer></ActivityTimer>
+      <ActivityTimer time={time} />
       <FlowRow style={styles.listHeading}>
         <FlowText style={styles.text}>Activities</FlowText>
         <FlowText style={styles.text}>Add</FlowText>
@@ -140,6 +158,7 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
         data={activities}
         keyExtractor={({ id }) => id}
         renderItem={({ item }) => (
+          //checkActivity bersi return dari activities yg current/saat ini
           <ActivityItem {...item} onActivityChange={checkActivity} />
         )}
       />
@@ -161,6 +180,26 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+/*
+tampilan dan penambahan waktu pada tampilan 
+jadi stiap waktu (timer) maka jika kita gerakan kekakann maka dia akan gerak waktu berdetak tambah 
+nah ktika kita geser activity item yg lain kekakanan maka yg tertulis ada timer dari activity yg baru 
+nah yg lama terakhir tadi dsimpan distorage 
+nah ktika kita geser kekanan lagi item yg terdahulu maka otomatis waktu akan tambah pada dispaly 
+yg tadi tersimpan ( tidak mulai dar nol lagi)
+maka dari itu kita buat function : updateTimeOnActiveItem(activities)
+utk masukan activitis yg lagi running  saat ini ! 
+
+*/
+
+/*
+timer dispalya ;
+dari sini kita buat function yg ubah milisecond ke format hh:mm:ss dan sudah kita buat 
+nah kita akan juga buat state utk time tsb  diatas! state time tsb jadi props masuk ke <TImerActivity time={time}/>
+
+
+*/
 
 /*
 improve :

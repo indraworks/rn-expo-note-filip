@@ -2,15 +2,18 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { FlowHighLightView, FlowRow, FlowText } from "../overrides";
 import { COLORS } from "../../variables/styles";
+import { formatTime } from "../../utils/Function";
 
-export const ActivityTimer = () => {
+export const ActivityTimer = ({ time }) => {
   return (
     <FlowHighLightView style={styles.timeContainer}>
       <FlowRow style={styles.row}>
         <FlowText> No Activities</FlowText>
       </FlowRow>
       <FlowRow style={styles.row}>
-        <FlowText style={styles.time}>00:00:00</FlowText>
+        <FlowText style={{ ...styles.time, fontVariant: ["tabular-nums"] }}>
+          {formatTime(time)}
+        </FlowText>
       </FlowRow>
     </FlowHighLightView>
   );
