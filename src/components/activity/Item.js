@@ -3,10 +3,17 @@ import { Animated, PanResponder, StyleSheet } from "react-native";
 import { COLORS } from "../../variables/styles";
 import { FlowText, FlowHighLightView, FlowRow } from "../overrides";
 import LoadingDots from "../common/LoadingDots";
+import { formatTime } from "../../utils/Function";
 
 const TRESHOLD = 60;
 //activityItem adalah item pada home pada list
-export const ActivityItem = ({ title, onActivityChange, id, isActive }) => {
+export const ActivityItem = ({
+  title,
+  onActivityChange,
+  id,
+  isActive,
+  time,
+}) => {
   const pan = useRef(new Animated.ValueXY()).current; //menetapkan ref animasi daam variable pan
   //dimana utk tentukan arah x ,arah y waktu move!
 
@@ -81,7 +88,7 @@ export const ActivityItem = ({ title, onActivityChange, id, isActive }) => {
             {isActive ? (
               <LoadingDots color={"blue"} />
             ) : (
-              <FlowText>00:00:00</FlowText>
+              <FlowText>{formatTime(time)}</FlowText>
             )}
           </FlowText>
         </FlowRow>

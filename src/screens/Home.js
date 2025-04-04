@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, View, Text } from "react-native";
+import { FlatList, StyleSheet, View, Text, Platform } from "react-native";
 import { ActivityTimer } from "../components/activity/Timer";
 import { ActivityItem } from "../components/activity/Item";
 //kita kasih alias defaulItems adalah data awal dari json kita !
@@ -65,7 +65,8 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
     } else {
       //timeRef di reset
       //jika sama!
-      startTimeRef.current = 0;
+      timeRef.current = 0;
+      setTime(0);
       cancelAnimationFrame(timeRequestRef.current);
     }
     return () => {
@@ -103,7 +104,24 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
     }
   };
 
-  //buat updateTimeOnActiveItem(activities) utk selalu update
+  //mmbuat useEfect utk reseting web dan sblum tereset kita udah save duluan
+  //jadi efect flash gak berlaku jadi tetap tampil gak o tapi angka trakhir tetap ada
+
+  useEffect(() => {
+    const save = () => {
+      setActivities((activities) => {
+        updateTimeOnActiveItem(activities);
+        saveToStorage(activities);
+        return activities;
+      });
+    };
+    if (Platform.OS === "web") {
+      window.addEventListener("beforeunload", save);
+      return () => {
+        window.removeEventListener("beforeunload", save);
+      };
+    }
+  });
 
   const updateTimeOnActiveItem = (activities) => {
     //cari id (index) activities yg saat ini active
@@ -149,7 +167,7 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
 
   return (
     <View style={styles.screenContainer}>
-      <ActivityTimer time={time} />
+      <ActivityTimer time={time} title={activeItem?.title} />
       <FlowRow style={styles.listHeading}>
         <FlowText style={styles.text}>Activities</FlowText>
         <FlowText style={styles.text}>Add</FlowText>
@@ -180,6 +198,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+/*
+pada saat reset di web dia akan sllau jadi nol 
+utk versi web maka kita harus buat useEffect dan buat agar 
+perhitungan masih tersimpan jika terjadi refresh
+
+
+*/
 
 /*
 tampilan dan penambahan waktu pada tampilan 

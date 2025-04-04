@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   },
   saContainer: {
     flex: 1,
-    padding: 20,
+    padding: 10,
     alignItems: "center",
     justifyContent: "center",
   },

@@ -1,14 +1,14 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { FlowHighLightView, FlowRow, FlowText } from "../overrides";
 import { COLORS } from "../../variables/styles";
 import { formatTime } from "../../utils/Function";
 
-export const ActivityTimer = ({ time }) => {
+export const ActivityTimer = ({ time, title }) => {
   return (
     <FlowHighLightView style={styles.timeContainer}>
       <FlowRow style={styles.row}>
-        <FlowText> No Activities</FlowText>
+        <FlowText> {title ? title : "No Activity"}</FlowText>
       </FlowRow>
       <FlowRow style={styles.row}>
         <FlowText style={{ ...styles.time, fontVariant: ["tabular-nums"] }}>
