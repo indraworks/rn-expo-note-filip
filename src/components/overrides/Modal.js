@@ -2,7 +2,7 @@ import { Modal, StyleSheet, View } from "react-native";
 import { COLORS } from "../../variables/styles";
 
 export const FlowModal = ({ children, animationType, visible, bgColor }) => {
-  const defaultBgColor = bgColor || COLORS.semiDarkGray;
+  const defaultBgColor = bgColor || COLORS.darkGray;
   return (
     <Modal animationType={animationType} transparent={true} visible={visible}>
       <View style={styles.modalContainer}>
