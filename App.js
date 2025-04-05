@@ -20,7 +20,7 @@ export default function App() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.saContainer}>
+    <SafeAreaView style={styles.safeContainer}>
       <View style={styles.container}>
         {isStorageEnabled == null ? (
           <></>
@@ -35,16 +35,13 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeContainer: {
     flex: 1,
     backgroundColor: COLORS.black,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
   },
-  saContainer: {
+  container: {
     flex: 1,
-    padding: 10,
+    padding: 20,
     alignItems: "center",
     justifyContent: "center",
   },

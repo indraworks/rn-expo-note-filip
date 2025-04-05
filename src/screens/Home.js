@@ -8,6 +8,7 @@ import { FlowRow, FlowText } from "../components/overrides";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { loadDayFlowItems, storeDayFlowItems } from "../storage ";
 import { usePrevious } from "../utils/Function";
+import { ItemCreate } from "../components/activity/ItemCreate";
 
 export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   const [activities, setActivities] = useState([]);
@@ -20,7 +21,7 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   //utk elapse timenya per 100ms
   const timeRef = useRef(0);
   //Ref utk timer berhenti
-  const timeRequestRef = useRef(-1);
+  const timeRequestRef = useRef(null);
 
   //mmbuat funct activeitem  dgn useMEmo dimana prikasa state Activities berubah
   const activeItem = useMemo(() => {
@@ -45,35 +46,89 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   }, []);
 
   useEffect(() => {
-    //check apakah activeItem yg sekarang ini sama dgn yg sblumnya?
-    //kita check dari id
+    const save = () => {
+      setActivities((activities) => {
+        updateTimeOnActiveItem(activities);
+        saveToStorage(activities);
+        return activities;
+      });
+    };
+    if (Platform.OS === "web") {
+      //jika platform web
+      window.addEventListener("beforeunload", save);
+      return () => {
+        window.removeEventListener("beforeunload", save);
+      };
+    } else {
+      //jika pakai mobile pakai atau ditriger dari APpstate prubahan utk mlihat
+      //prubahan refresh pada layar dan kita jalankan func save nya !
+      const handleAppStateChange = (appState) => {
+        if (appState === "background" || appState === "inactive") {
+          save();
+        }
+        const sub = AppState.addEventListener("change", handleAppStateChange);
+        return () => {
+          sub.remove();
+        };
+      };
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   //check apakah activeItem yg sekarang ini sama dgn yg sblumnya?
+  //   //kita check dari id
+  //   const isSameItem = activeItem && activeItem?.id === preActiveItem?.id;
+
+  //   //check activeItem atau state activities berubah
+  //   if (activeItem) {
+  //     //jika activeItem != previousItem sblumya
+  //     if (!isSameItem) {
+  //       //startTimeRef.current = 0; aslinya startime dibuat zero
+  //       //tapi pada timer di UI ini harus ada refernce yg sudah ada timernya!
+  //       //jadi tiap2 item2 yg lain di ui digeserkanan maka dia akan ambil waktu yg udah
+  //       //ada di storage di tambahkan !
+  //       timeRef.current = activeItem.time;
+  //       startTimeRef.current = new Date();
+  //     }
+
+  //     tick();
+  //   } else {
+  //     //timeRef di reset
+  //     //jika sama!
+  //     timeRef.current = 0;
+  //     setTime(0);
+  //     cancelAnimationFrame(timeRequestRef.current);
+  //   }
+
+  //   return () => {
+  //     cancelAnimationFrame(timeRequestRef.current);
+  //   };
+
+  //   //perubahan useState ini dari activeItem y ebrubah
+  // }, [activeItem]);
+
+  useEffect(() => {
     const isSameItem = activeItem && activeItem?.id === preActiveItem?.id;
 
-    //check activeItem atau state activities berubah
     if (activeItem) {
-      //jika activeItem != previousItem sblumya
       if (!isSameItem) {
-        //startTimeRef.current = 0; aslinya startime dibuat zero
-        //tapi pada timer di UI ini harus ada refernce yg sudah ada timernya!
-        //jadi tiap2 item2 yg lain di ui digeserkanan maka dia akan ambil waktu yg udah
-        //ada di storage di tambahkan !
         timeRef.current = activeItem.time;
         startTimeRef.current = new Date();
       }
-
       tick();
     } else {
-      //timeRef di reset
-      //jika sama!
       timeRef.current = 0;
       setTime(0);
-      cancelAnimationFrame(timeRequestRef.current);
+      if (timeRequestRef.current != null && timeRequestRef.current !== -1) {
+        cancelAnimationFrame(timeRequestRef.current);
+      }
     }
-    return () => {
-      cancelAnimationFrame(timeRequestRef.current);
-    };
 
-    //perubahan useState ini dari activeItem y ebrubah
+    return () => {
+      if (timeRequestRef.current != null && timeRequestRef.current !== -1) {
+        cancelAnimationFrame(timeRequestRef.current);
+      }
+    };
   }, [activeItem]);
 
   const tick = () => {
@@ -106,22 +161,6 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
 
   //mmbuat useEfect utk reseting web dan sblum tereset kita udah save duluan
   //jadi efect flash gak berlaku jadi tetap tampil gak o tapi angka trakhir tetap ada
-
-  useEffect(() => {
-    const save = () => {
-      setActivities((activities) => {
-        updateTimeOnActiveItem(activities);
-        saveToStorage(activities);
-        return activities;
-      });
-    };
-    if (Platform.OS === "web") {
-      window.addEventListener("beforeunload", save);
-      return () => {
-        window.removeEventListener("beforeunload", save);
-      };
-    }
-  });
 
   const updateTimeOnActiveItem = (activities) => {
     //cari id (index) activities yg saat ini active
@@ -180,6 +219,7 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
           <ActivityItem {...item} onActivityChange={checkActivity} />
         )}
       />
+      <ItemCreate />
     </View>
   );
 };
@@ -198,6 +238,21 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+/*
+Modal,
+jadi kita akan buat modal kita ketahui modal adalah 
+sbuah screen yg muncul di z+1 pada layar nah jika ada modal maka
+component ini akan menutp penuh layar dan ada closing  dan juga ada property 
+visible = true utk event dia  muncul dan tuutp layar /.covering di z+1 
+nah syiling modal kita pakai view sbgai container 
+dan nnti view ke-2 sbgai content dimana nnti content ada tulisan2 pesan kita 
+atau inputan pilihan dll!
+jadi modal muncil nnti jika kita klick tombol add ,sehingga nnti ada pilihan 
+utk input box pada content modal! 
+
+
+*/
 
 /*
 pada saat reset di web dia akan sllau jadi nol 
