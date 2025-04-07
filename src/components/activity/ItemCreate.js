@@ -1,6 +1,6 @@
 import { TextInput, StyleSheet, Pressable } from "react-native";
 import { COLORS } from "../../variables/styles";
-import { FlowModal, FlowText, FlowRow } from "../overrides";
+import { FlowModal, FlowText, FlowRow, FlowButton } from "../overrides";
 
 export const ItemCreate = () => {
   const cancel = () => {
@@ -22,13 +22,8 @@ export const ItemCreate = () => {
         placeholderTextColor={COLORS.semiDarkGray}
       />
       <FlowRow style={styles.space}>
-        <Pressable onPress={confirm}>
-          <FlowText>Confirm</FlowText>
-        </Pressable>
-
-        <Pressable onPress={cancel} style={{ marginLeft: 15 }}>
-          <FlowText>Cancel</FlowText>
-        </Pressable>
+        <FlowButton ghost type="primary" text={"Confirm"} onPress={confirm} />
+        <FlowButton ghost type="danger" text={"Cancel"} onPress={cancel} />
       </FlowRow>
     </FlowModal>
   );
@@ -45,13 +40,14 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   space: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
+    justifyContent: "space-around",
   },
 });
 /*
 Pada Item Create kita buat  input dalam modal dan tombol confirm dan yes dibawahnya 
- 
+ nah utk button kita akan buat re-usable button yg mana bisa di pakai di berbagai tempat
+ compooentn2 lain yg mmbuuthkan yg diatas kita pakai presable dan presable ini 
+ masuk di compoentn re-usable button  yg mana berupa functuon berupa props2 yg nnti dimasukan 
+ property2 button tsb ktika dipanggil dan style sesuai kebutuhannya 
 
 */
