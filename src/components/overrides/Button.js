@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, Text } from "react-native";
+import { Pressable, Text, Platform } from "react-native";
 import { COLORS } from "../../variables/styles";
 
 //kita buat colir utk type yg akan masuk sbgai warna2
@@ -10,6 +10,7 @@ import { COLORS } from "../../variables/styles";
 // atau mewakili kalaj ada fucntion atau param /variable yg masuk!
 
 export const FlowButton = ({ text, ghost, type, ...rest }) => {
+  const webOnly = Platform.OS === "web" ? { userSelect: "none" } : {};
   const color =
     type === "primary"
       ? COLORS.normalGreen
@@ -37,8 +38,24 @@ export const FlowButton = ({ text, ghost, type, ...rest }) => {
       };
 
   return (
-    <Pressable {...rest} style={{ ...buttonStyle, userSelect: "none" }}>
+    <Pressable {...rest} style={{ ...buttonStyle, ...webOnly }}>
       <Text style={{ ...textStyle }}>{text}</Text>
     </Pressable>
   );
 };
+
+/*
+utk useSElect ini  props hanya supper utk web kita ubah itu code diatas utk webOnly saja!
+ <Pressable {...rest} style={{ ...buttonStyle, userSelect: "none" }}>
+
+jadi kita pakai platFOrmCheck :
+import { Platform } from "react-native";
+
+const webOnlyStyle = Platform.OS === "web" ? { userSelect: "none" } : {};
+
+<Pressable
+  {...rest}
+  style={{ ...buttonStyle, ...webOnlyStyle }}
+
+
+*/
