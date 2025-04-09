@@ -9,7 +9,7 @@ import { COLORS } from "../../variables/styles";
 //utk masukan ...rest itu sisanya yg lain,
 // atau mewakili kalaj ada fucntion atau param /variable yg masuk!
 
-export const FlowButton = ({ text, ghost, type, ...rest }) => {
+export const FlowButton = ({ text, ghost, disabled, type, ...rest }) => {
   const webOnly = Platform.OS === "web" ? { userSelect: "none" } : {};
   const color =
     type === "primary"
@@ -20,25 +20,32 @@ export const FlowButton = ({ text, ghost, type, ...rest }) => {
       ? COLORS.brightYellow
       : COLORS.brightBlue;
 
-  const isGhost = ghost || false;
+  const isGhost = ghost ?? false;
+  const isDisabled = disabled ?? false;
+
+  //tanda ?? ini adalah utk check null dan undefined maka dia false!
 
   const buttonStyle = isGhost
     ? { backgroundColor: "transparent" }
     : {
-        backgroundColor: color,
+        backgroundColor: isDisabled ? COLORS.semiDarkGray : color,
         padding: 10,
         borderRadius: 5,
       };
 
   const textStyle = isGhost
     ? //jamgan taruh color aja karena color adalah ibjec jadi harus {color} bukan color  aja!
-      { color }
+      { color: isDisabled ? COLORS.semiDarkGray : color }
     : {
-        color: COLORS.white,
+        color: isDisabled ? COLORS.darkGray : COLORS.white,
       };
 
   return (
-    <Pressable {...rest} style={{ ...buttonStyle, ...webOnly }}>
+    <Pressable
+      disabled={isDisabled}
+      {...rest}
+      style={{ ...buttonStyle, ...webOnly }}
+    >
       <Text style={{ ...textStyle }}>{text}</Text>
     </Pressable>
   );

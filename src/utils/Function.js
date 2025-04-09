@@ -27,3 +27,19 @@ export const formatTime = (milliseconds) => {
 
   return `${hours}:${minutes}:${seconds}`;
 };
+
+export const generateRandomId = (length = 10) => {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let randomId = "";
+  for (let i = 0; i < length; i++) {
+    //ambil randomIndex
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    //mathFloor utk genapkan ,Math.Random()* pangkamg caractehr =10
+    //nnti kluar index ini hasil ramdom trus ambil cahracter di caracters base dari idx random yg didapat!
+    //trus masukan itu kerandom id  caracter tadi tiap caracted yg didapat ditambahkan ke carater yg sudah ada
+    //dari rumus dinawah ini:
+    randomId += characters.charAt(randomIndex);
+  }
+  return randomId;
+};
