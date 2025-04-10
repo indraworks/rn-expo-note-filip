@@ -4,7 +4,7 @@ import { ActivityItem } from "../components/activity/Item";
 //kita kasih alias defaulItems adalah data awal dari json kita !
 import defaultItems from "../data/activities.json";
 
-import { FlowRow, FlowText } from "../components/overrides";
+import { FlowButton, FlowRow, FlowText } from "../components/overrides";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { loadDayFlowItems, storeDayFlowItems } from "../storage ";
 import { usePrevious } from "../utils/Function";
@@ -12,6 +12,9 @@ import { ItemCreate } from "../components/activity/ItemCreate";
 
 export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   const [activities, setActivities] = useState([]);
+  //ini state dibawah adalah utk show on /off visible modal
+  const [showItemCreate, setShowItemCreate] = useState(false);
+
   //make state time !
   const [time, setTime] = useState(0);
 
@@ -66,46 +69,13 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
         if (appState === "background" || appState === "inactive") {
           save();
         }
-        const sub = AppState.addEventListener("change", handleAppStateChange);
+        const sub = appState.addEventListener("change", handleAppStateChange);
         return () => {
           sub.remove();
         };
       };
     }
   }, []);
-
-  // useEffect(() => {
-  //   //check apakah activeItem yg sekarang ini sama dgn yg sblumnya?
-  //   //kita check dari id
-  //   const isSameItem = activeItem && activeItem?.id === preActiveItem?.id;
-
-  //   //check activeItem atau state activities berubah
-  //   if (activeItem) {
-  //     //jika activeItem != previousItem sblumya
-  //     if (!isSameItem) {
-  //       //startTimeRef.current = 0; aslinya startime dibuat zero
-  //       //tapi pada timer di UI ini harus ada refernce yg sudah ada timernya!
-  //       //jadi tiap2 item2 yg lain di ui digeserkanan maka dia akan ambil waktu yg udah
-  //       //ada di storage di tambahkan !
-  //       timeRef.current = activeItem.time;
-  //       startTimeRef.current = new Date();
-  //     }
-
-  //     tick();
-  //   } else {
-  //     //timeRef di reset
-  //     //jika sama!
-  //     timeRef.current = 0;
-  //     setTime(0);
-  //     cancelAnimationFrame(timeRequestRef.current);
-  //   }
-
-  //   return () => {
-  //     cancelAnimationFrame(timeRequestRef.current);
-  //   };
-
-  //   //perubahan useState ini dari activeItem y ebrubah
-  // }, [activeItem]);
 
   useEffect(() => {
     const isSameItem = activeItem && activeItem?.id === preActiveItem?.id;
@@ -204,12 +174,38 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
     });
   };
 
+  //kita masukan addItem function sbgai param yg masuk ke props
+  //di anak compoennt itemCreate
+  const addItem = (newItem) => {
+    setActivities((activities) => {
+      const newActivities = [...activities, newItem];
+      //kita masukan variable dan kita save to storage
+      //dan return  variablenya
+      saveToStorage(newActivities);
+      return newActivities;
+    });
+  };
+
   return (
     <View style={styles.screenContainer}>
+      <ItemCreate
+        visible={showItemCreate}
+        //addItem fucnton dari parent masik ke anak ItemCreate
+        //nama props yg masukan adalah onCOnfirm maka kita nnti invoke ini
+        //function jadi onCOnfirm() ddalam component anak!
+        onConfirm={addItem}
+        onClose={() => setShowItemCreate(false)}
+      />
       <ActivityTimer time={time} title={activeItem?.title} />
       <FlowRow style={styles.listHeading}>
         <FlowText style={styles.text}>Activities</FlowText>
-        <FlowText style={styles.text}>Add</FlowText>
+        {/* <FlowText style={styles.text}>Add</FlowText> */}
+        <FlowButton
+          ghost
+          type="primary"
+          onPress={() => setShowItemCreate(true)}
+          text={"add"}
+        />
       </FlowRow>
       <FlatList
         data={activities}
@@ -219,7 +215,6 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
           <ActivityItem {...item} onActivityChange={checkActivity} />
         )}
       />
-      <ItemCreate />
     </View>
   );
 };

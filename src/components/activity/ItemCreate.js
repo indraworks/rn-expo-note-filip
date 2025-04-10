@@ -4,7 +4,7 @@ import { FlowModal, FlowText, FlowRow, FlowButton } from "../overrides";
 import { useState } from "react";
 import { generateRandomId } from "../../utils/Function";
 
-export const ItemCreate = () => {
+export const ItemCreate = ({ visible, onClose, onConfirm }) => {
   //buat state newItem
   const [newItem, setNewItem] = useState({
     title: "",
@@ -12,8 +12,29 @@ export const ItemCreate = () => {
     isActivate: false,
     time: 0,
   });
+
+  /*
+   pada Parent Home.js
+   septi ini utk closenya : jadi functiuon  onCLose masuk ke ItemCreate functuon 
+   nah function tsn yg masuk nerisi state yg diset utk false dan state nya ada di parent!
+   nah di itemCteate compoentnya ini pada fucntuon cancel tinggal invoke saja!
+   onClose() ini artinya si onClose functuon dipamggil dihiudpkan ! 
+
+    <ItemCreate
+        visible={showItemCreate}
+        onClose={() => setShowItemCreate(false)}
+      />
+   JADI HUKUM YG BERLAKU DI REACT ADALAH : jika ada state dideclare di parent component
+    dan dia masuk lewat "function" ke dalam anak component
+   maka di anak component masuk tadi maka INVOKENYA ada di anak component!
+   nah function tadi diinvoke dgn panggil propsnya yg masuk keanak compoennt tadi 
+   mis propnya adalah onClose-->maka invoke dgn cara onClose()  ====>yaitu kasih tanda kurung!
+
+  */
+
   const cancel = () => {
     console.log("Cancel!");
+    onClose();
   };
   const isError = newItem.title === String("");
   //nilai isError adalah jika ada string kosong!
@@ -21,11 +42,16 @@ export const ItemCreate = () => {
 
   const confirm = () => {
     const _newItem = { ...newItem, id: generateRandomId() };
-    console.log(_newItem);
+    //console.log(_newItem);
+    //kita invoke ini onConfirm jagna lupa masikan _newItem dari input
+    onConfirm(_newItem);
+    //sklian habis itu invoke utk onClose lewat cancel gak langsung
+    //cancel()
+    onClose();
   };
   return (
     <FlowModal
-      visible={true}
+      visible={visible}
       animationType={"fade"}
       bgColor={COLORS.semiDarkGray}
     >
