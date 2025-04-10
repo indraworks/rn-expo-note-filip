@@ -235,6 +235,29 @@ const styles = StyleSheet.create({
 });
 
 /*
+     HUKUM REACT parent compoment -->anak compoent jika 
+     yg pasing adalah function masuk ke anak com[onent pake props 
+     
+     septi ini utk closenya : jadi functiuon  onCLose masuk ke ItemCreate functuon 
+   nah function tsn yg masuk nerisi state yg diset utk false dan state nya ada di parent!
+   nah di itemCteate compoentnya ini pada fucntuon cancel tinggal invoke saja!
+   onClose() ini artinya si onClose functuon dipamggil dihiudpkan ! 
+
+    <ItemCreate
+        visible={showItemCreate}
+        onClose={() => setShowItemCreate(false)}
+      />
+   JADI HUKUM YG BERLAKU DI REACT ADALAH : jika ada state dideclare di parent component
+    dan dia masuk lewat "function" ke dalam anak component
+   maka di anak component masuk tadi maka INVOKENYA ada di anak component!
+   nah function tadi diinvoke dgn panggil propsnya yg masuk keanak compoennt tadi 
+   mis propnya adalah onClose-->maka invoke dgn cara onClose()  ====>yaitu kasih tanda kurung!
+     
+
+
+   */
+
+/*
 Modal,
 jadi kita akan buat modal kita ketahui modal adalah 
 sbuah screen yg muncul di z+1 pada layar nah jika ada modal maka

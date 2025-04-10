@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, SafeAreaView, View } from "react-native";
+import { StyleSheet, SafeAreaView, View, Platform } from "react-native";
 import { ActivityHomeScreen } from "./src/screens/Home";
 import { COLORS } from "./src/variables/styles";
 import { useEffect, useState } from "react";
@@ -19,9 +19,17 @@ export default function App() {
     checkStorage();
   }, []);
 
+  const containerStyle =
+    Platform.OS === "web"
+      ? {
+          maxWidth: 500, //dibatasi sampa 500 sisi kanan-kiri utk web platform!
+          margin: "auto",
+        }
+      : {};
+
   return (
     <SafeAreaView style={styles.safeContainer}>
-      <View style={styles.container}>
+      <View style={{ ...styles.container, ...containerStyle }}>
         {isStorageEnabled == null ? (
           <></>
         ) : (
@@ -36,16 +44,19 @@ export default function App() {
 
 const styles = StyleSheet.create({
   safeContainer: {
+    width: "100%",
     flex: 1,
     backgroundColor: COLORS.black,
   },
   container: {
+    width: "100%",
     flex: 1,
     padding: 20,
     alignItems: "center",
     justifyContent: "center",
   },
 });
+
 /*
 pada app.js view kita hilangkan ganti 
 denfan SafeAreaView mewakili batas2 nah saveAreaView tidak boleh berisi container
