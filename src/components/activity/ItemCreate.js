@@ -67,10 +67,17 @@ export const ItemCreate = ({ visible, onClose, onConfirm }) => {
           disabled={isError}
           ghost
           type="primary"
-          text={"Confirm"}
+          //text={"Confirm"} text doubah jadi content
+          content={"Confirm"}
           onPress={confirm}
         />
-        <FlowButton ghost type="danger" text={"Cancel"} onPress={cancel} />
+        <FlowButton
+          ghost
+          type="danger"
+          //text={"Cancel"}  //text={"Confirm"} text doubah jadi content
+          content={"Cancel"}
+          onPress={cancel}
+        />
       </FlowRow>
     </FlowModal>
   );

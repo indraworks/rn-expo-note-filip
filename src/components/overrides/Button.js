@@ -1,6 +1,6 @@
 import React from "react";
 import { Pressable, Text, Platform } from "react-native";
-import { COLORS } from "../../variables/styles";
+import { COLORS, SIZES } from "../../variables/styles";
 
 //kita buat colir utk type yg akan masuk sbgai warna2
 //"primary" = biru
@@ -9,7 +9,14 @@ import { COLORS } from "../../variables/styles";
 //utk masukan ...rest itu sisanya yg lain,
 // atau mewakili kalaj ada fucntion atau param /variable yg masuk!
 
-export const FlowButton = ({ text, ghost, disabled, type, ...rest }) => {
+export const FlowButton = ({
+  content: Content,
+  text,
+  ghost,
+  disabled,
+  type,
+  ...rest
+}) => {
   const webOnly = Platform.OS === "web" ? { userSelect: "none" } : {};
   const color =
     type === "primary"
@@ -46,7 +53,17 @@ export const FlowButton = ({ text, ghost, disabled, type, ...rest }) => {
       {...rest}
       style={{ ...buttonStyle, ...webOnly }}
     >
-      <Text style={{ ...textStyle }}>{text}</Text>
+      {/* yg tadi text={} di itemCreate  kita ganti dgn content 
+        tinggal cek yg masuk apa jika type text dia masuk tulisan 
+        maka 
+        kmudian kita baut jsx disini utk check yg masuk adalah text atauy 
+        bukan sbnanryan kuta mengarahkan agar dia tetap jadi content sbb:
+      */}
+      {typeof Content === "string" ? (
+        <Text style={{ ...textStyle }}>{Content}</Text>
+      ) : (
+        <Content size={SIZES.fontExtraLarge} color={textStyle.color} />
+      )}
     </Pressable>
   );
 };

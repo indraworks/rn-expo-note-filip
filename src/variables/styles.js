@@ -10,3 +10,12 @@ export const COLORS = {
   brightBlue: "#33d6ff",
   brightRed: "#ff5555",
 };
+
+//utk ukuran2 font mulai dari kecil sd besar kita pakai SIZES styles
+export const SIZES = {
+  fontVerySmall: 11,
+  fontSmall: 14,
+  fontMedium: 17,
+  fontLarge: 21,
+  fontExtraLarge: 26,
+};

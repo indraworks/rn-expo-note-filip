@@ -9,6 +9,8 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import { loadDayFlowItems, storeDayFlowItems } from "../storage ";
 import { usePrevious } from "../utils/Function";
 import { ItemCreate } from "../components/activity/ItemCreate";
+import { COLORS } from "../variables/styles";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   const [activities, setActivities] = useState([]);
@@ -204,7 +206,8 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
           ghost
           type="primary"
           onPress={() => setShowItemCreate(true)}
-          text={"add"}
+          //text={"add"}  //ini kia ganti dgn content
+          content={(props) => <MaterialIcons name="playlist-add" {...props} />}
         />
       </FlowRow>
       <FlatList
@@ -233,6 +236,24 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+/*
+menggunakan expo vector icons :
+@expo/vector-icons
+https://icons.expo.fyi/Index
+
+search yg mau dipakai dan dowuble klick nnti mis additem list 
+nnti dia akan muncul ke halaman baru  
+nnti kita import :
+import AntDesign from '@expo/vector-icons/AntDesign';
+
+2) baru pas render di jsx ( didalam kalang return)
+<AntDesign name="addfile" size={24} color="black" />
+pertama2 yg diflow button tadi kan ada text={"add"}
+yg text ini kita ganti nama content aja props ini 
+dan yg {"add"} kita ganti dgn <AntDesign name="addfile" size={24} color="black" />
+
+*/
 
 /*
      HUKUM REACT parent compoment -->anak compoent jika 
