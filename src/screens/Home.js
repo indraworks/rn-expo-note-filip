@@ -11,6 +11,7 @@ import { usePrevious } from "../utils/Function";
 import { ItemCreate } from "../components/activity/ItemCreate";
 import { COLORS } from "../variables/styles";
 import { MaterialIcons } from "@expo/vector-icons";
+import ItemDetail from "../components/activity/ItemDetail";
 
 export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   const [activities, setActivities] = useState([]);
@@ -192,6 +193,7 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
 
   return (
     <View style={styles.screenContainer}>
+      <ItemDetail />
       <ItemCreate
         visible={showItemCreate}
         //addItem fucnton dari parent masik ke anak ItemCreate
@@ -245,6 +247,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+/*
+setelah ini kita akah buat detail page item jadi ,ktika kita klik aatau double klik item maka aka
+ada page baru nah kita juga buat modela di page baru ini 
+
+
+
+
+*/
 
 /*
 Cegah waktu kita geser itemActivity kekanan maka 
