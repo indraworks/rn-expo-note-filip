@@ -16,6 +16,8 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   const [activities, setActivities] = useState([]);
   //ini state dibawah adalah utk show on /off visible modal
   const [showItemCreate, setShowItemCreate] = useState(false);
+  //state utk scrollEnabled
+  const [scrollEnabled, setScrollEnabled] = useState(true);
 
   //make state time !
   const [time, setTime] = useState(0);
@@ -205,17 +207,24 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
         <FlowButton
           ghost
           type="primary"
-          onPress={() => setShowItemCreate(true)}
+          onPressIn={() => setShowItemCreate(true)}
           //text={"add"}  //ini kia ganti dgn content
           content={(props) => <MaterialIcons name="playlist-add" {...props} />}
         />
       </FlowRow>
       <FlatList
+        //nama staenya nya sama dgn anama prperty
+        scrollEnabled={scrollEnabled}
         data={activities}
         keyExtractor={({ id }) => id}
         renderItem={({ item }) => (
           //checkActivity bersi return dari activities yg current/saat ini
-          <ActivityItem {...item} onActivityChange={checkActivity} />
+          <ActivityItem
+            {...item}
+            onActivityChange={checkActivity}
+            onSwipeStart={() => setScrollEnabled(false)}
+            onSwipeEnd={() => setScrollEnabled(true)}
+          />
         )}
       />
     </View>
@@ -236,6 +245,26 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+/*
+Cegah waktu kita geser itemActivity kekanan maka 
+nah dibagian item.js kita tambahkan props ( onSwipStarr dan on SwipeENd
+waktu swipeSatart maka scroll gak buleh active)
+
+nah waktu swipeEnd maka scroll boleh activ jadi gak gnaggu kita gerak kiri dan kanan
+kit amakai isSWipping default false 
+nah di Home,.js kita buat state enabledSrolled,setEnableSCro;;
+
+onSwipeStart={() => setScrollEnabled(false)}
+onSwipeEnd={() => setScrollEnabled(true)}
+ini funtion jadi props masuk ke item.js
+NAH di FlatList ada proeprty enableScrolled nah kalau dia true maak dia scroll jalan kebawah 
+tapi kalau dia false dia frezee ini yg kita mainkan di HOME.js !
+
+nah kita tambahkan ja di  activityItem tsb  fcution masuk 
+lwat props onSwipeStart yg isinya scroll Flatlis didisable 
+             onSwipeEnd yg isinya scroll Flatlis denabled 
+*/
 
 /*
 menggunakan expo vector icons :

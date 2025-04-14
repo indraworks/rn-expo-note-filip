@@ -13,9 +13,14 @@ export const ActivityItem = ({
   id,
   isActive,
   time,
+  onSwipeStart,
+  onSwipeEnd,
 }) => {
   const pan = useRef(new Animated.ValueXY()).current; //menetapkan ref animasi daam variable pan
   //dimana utk tentukan arah x ,arah y waktu move!
+
+  //isSwiping diatruh di ref useRef biar gak re-render
+  const isSwipping = useRef(false);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -37,9 +42,20 @@ export const ActivityItem = ({
           onActivityChange({ id, state: true }); //kita pakai props kita panggil function checkActivity
         }
 
+        //pake Math.abs ini ktika geser kekanan,mentok! matikan scrollnya !
+        //dan ktika pan-nya direalse abru scroll di hifupkan!
+        //treshold > 90 dan !isSwipping = true
+        //kmudia is isSwiping.curent  jadi true
+        //dan onSwipStart
+
         if (currentX < -TRESHOLD) {
           //console.log("DE-ACTIVATE TIMER");
           onActivityChange({ id, state: false }); //kita pakai props kita panggil function checkActivity
+        }
+
+        if (Math.abs(currentX) > TRESHOLD && !isSwipping.current) {
+          isSwipping.current = true;
+          onSwipeStart();
         }
 
         Animated.event([null, { dx: pan.x, dy: pan.y }], {
@@ -50,6 +66,11 @@ export const ActivityItem = ({
 
       //ini func utk waktu releasse stalh drag drop
       onPanResponderRelease: () => {
+        //ktika kita keswipe ke kiri maka kita release
+        //nah isSwipingEnd func kita invoke dan scrolled enabdle kembali
+        isSwipping.current = false;
+        onSwipeEnd();
+
         //pan.extractOffset;
         //utk relesae ke posisi reset maka dibutuhkan animated.spring func
         Animated.spring(pan, {
