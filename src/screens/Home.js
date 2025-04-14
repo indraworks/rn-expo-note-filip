@@ -251,8 +251,9 @@ const styles = StyleSheet.create({
 /*
 setelah ini kita akah buat detail page item jadi ,ktika kita klik aatau double klik item maka aka
 ada page baru nah kita juga buat modela di page baru ini 
-
-
+nah modalnya kita bau fullscreen -->utk dipakai pada  page ItemDetail,js 
+nah fullScreen merupakan props jika dipakai atau tidak tergantunf dari  props isFullScreen yg ada di 
+flowModal atau Modal.js 
 
 
 */

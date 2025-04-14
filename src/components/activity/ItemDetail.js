@@ -5,7 +5,7 @@ import { useState } from "react";
 const ItemDetail = () => {
   const { showModal, setShowModal } = useState(true);
   return (
-    <FlowModal visible={showModal} animationType={"fade"}>
+    <FlowModal fullScreen visible={showModal} animationType={"fade"}>
       <FlowText>Hello There</FlowText>
     </FlowModal>
   );

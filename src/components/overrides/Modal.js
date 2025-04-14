@@ -1,11 +1,44 @@
-import { Modal, StyleSheet, View } from "react-native";
+import { Modal, Platform, StyleSheet, View } from "react-native";
 import { COLORS } from "../../variables/styles";
+import Constants from "expo-constants"; //ut tahu status aplikasi saat ini app platofro,devie,verion ,manifest data.Environtment
+//variable  biasanya sdah default bersama expo
 
-export const FlowModal = ({ children, animationType, visible, bgColor }) => {
-  const defaultBgColor = bgColor || COLORS.darkGray;
+export const FlowModal = ({
+  children,
+  animationType,
+  visible,
+  bgColor,
+  fullScreen,
+}) => {
+  const defaultBgColor = bgColor ?? COLORS.darkGray; //jika undefined atau null maka darGray
+  const isFullScreen = fullScreen ?? false; //jika undefined atau null otomatis dia false
+  //kita buat containerStyles utk supaya ada pilihan apakah fullscreen atau default(baisa ) utk modalnya
+  const containerStyles = isFullScreen
+    ? {
+        backgroundColor: defaultBgColor,
+        paddingTop: Constants.statusBarHeight + 30,
+      }
+    : {
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.6)",
+      };
+
+  //platform web atau tidak
+  const webStyles =
+    Platform.OS === "web"
+      ? {
+          width: 500,
+          margin: "auto",
+        }
+      : {};
+  //webstyles,containerStyles jadi pros tambahan pada style modal
+
   return (
     <Modal animationType={animationType} transparent={true} visible={visible}>
-      <View style={styles.modalContainer}>
+      <View
+        style={{ ...styles.modalContainer, ...containerStyles, ...webStyles }}
+      >
         {/* utk background contentnya bisa kita tambahkan dari luar/props */}
         <View
           style={{
@@ -23,9 +56,6 @@ export const FlowModal = ({ children, animationType, visible, bgColor }) => {
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
   },
   modalContent: {
     minWidth: 350,
@@ -40,6 +70,7 @@ nah yg ada propertynya default utk atur adalah
 - onSHow,Visible,onRequestClose,transparent 
 simodal punya layer transparent cover (z+1) layer dibawahnya (z) /layar utama sblumnya !
 etc 
-
+//2 kit akan bua tmodal fullScreen jadi nnt ada props masuk sini utk fullScreen 
+tambahkan platform  utk besaran 500 krii kanan 
 
 */
