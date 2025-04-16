@@ -17,6 +17,7 @@ export const ActivityItem = ({
   time,
   onSwipeStart,
   onSwipeEnd,
+  onDoubleClick,
 }) => {
   const pan = useRef(new Animated.ValueXY()).current; //menetapkan ref animasi daam variable pan
   //dimana utk tentukan arah x ,arah y waktu move!
@@ -98,7 +99,9 @@ export const ActivityItem = ({
     const isDoubleClick = currentTime - lastPressTimeRef.current <= TAP_DELAY;
     //jika <= 350ms
     if (isDoubleClick) {
+      //invoke functuon di parent/home yg isinya setFocusedItem({...item})
       console.log("DOUBLE");
+      onDoubleClick();
     } else {
       //update waktu lastPrefTIme dgn currentTIme saat ini
       //agar nnti waktu berjalam ini yg jadi patokan pengurang!

@@ -10,7 +10,7 @@ import { useState } from "react";
 import { COLORS } from "../../variables/styles";
 import { formatTime } from "../../utils/Function";
 
-const ItemDetail = ({ focusedItem }) => {
+const ItemDetail = ({ focusedItem, onCloseDetail }) => {
   //props focusedItem dari Home bawa item yg ter-select / {...item}
   const { showModal, setShowModal } = useState(false);
   const [title, setTitle] = useState("");
@@ -41,7 +41,12 @@ const ItemDetail = ({ focusedItem }) => {
         */}
       <FlowButton
         //tombolback buat modal jadi invisble/hide
-        onPressIn={() => setShowModal(false)}
+        // onPressIn={() => setShowModal(false)}
+        onPressIn={() => {
+          setShowModal(false);
+          onCloseDetail?.();
+        }} // optional chaining safety
+        //invoke onCloseDetail jika props onCLoseDetail masuk
         style={styles.backButton}
         ghost
         type={"primary"}

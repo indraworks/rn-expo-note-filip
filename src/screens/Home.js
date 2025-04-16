@@ -196,7 +196,13 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
 
   return (
     <View style={styles.screenContainer}>
-      {/* <ItemDetail /> */}
+      <ItemDetail
+        focusedItem={focusedItem}
+        //ini dumaksudkan waktu render ItemDetail dari Home.js isi dari focusedItem berisi null
+        //jadi bukan undefined
+        onCloseDetail={() => setFocusedItem(null)}
+      />
+
       <ItemCreate
         visible={showItemCreate}
         //addItem fucnton dari parent masik ke anak ItemCreate
