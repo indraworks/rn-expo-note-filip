@@ -15,6 +15,7 @@ export const FlowButton = ({
   ghost,
   disabled,
   type,
+  style,
   ...rest
 }) => {
   const webOnly = Platform.OS === "web" ? { userSelect: "none" } : {};
@@ -51,7 +52,7 @@ export const FlowButton = ({
     <Pressable
       disabled={isDisabled}
       {...rest}
-      style={{ ...buttonStyle, ...webOnly }}
+      style={{ ...buttonStyle, ...style, ...webOnly }}
     >
       {/* yg tadi text={} di itemCreate  kita ganti dgn content 
         tinggal cek yg masuk apa jika type text dia masuk tulisan 

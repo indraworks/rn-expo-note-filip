@@ -1,11 +1,13 @@
 import React, { useRef } from "react";
-import { Animated, PanResponder, StyleSheet } from "react-native";
+import { Animated, PanResponder, Platform, StyleSheet } from "react-native";
 import { COLORS } from "../../variables/styles";
 import { FlowText, FlowHighLightView, FlowRow } from "../overrides";
 import LoadingDots from "../common/LoadingDots";
 import { formatTime } from "../../utils/Function";
 
 const TRESHOLD = 60;
+const TAP_DELAY = 350;
+
 //activityItem adalah item pada home pada list
 export const ActivityItem = ({
   title,
@@ -21,6 +23,7 @@ export const ActivityItem = ({
 
   //isSwiping diatruh di ref useRef biar gak re-render
   const isSwipping = useRef(false);
+  const lastPressTimeRef = useRef(0);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -80,15 +83,37 @@ export const ActivityItem = ({
       },
     })
   ).current;
+
   //kita buat disini utk background dimana akan brubah jika isACtive true !
   const itemBackgroundActive = isActive
     ? { backgroundColor: COLORS.semiDarkGray }
     : { backgroundColor: COLORS.darkGray };
 
+  //buat function hadnlePress yang ada  dalam Animated.View
+  ////kita buat habdlePress ukt handle doubleCLick timer digunakan utk deteksi jarak
+  //press  1 dan press-ke-2
+
+  const handlePress = () => {
+    const currentTime = new Date().getTime();
+    const isDoubleClick = currentTime - lastPressTimeRef.current <= TAP_DELAY;
+    //jika <= 350ms
+    if (isDoubleClick) {
+      console.log("DOUBLE");
+    } else {
+      //update waktu lastPrefTIme dgn currentTIme saat ini
+      //agar nnti waktu berjalam ini yg jadi patokan pengurang!
+      lastPressTimeRef.current = currentTime;
+    }
+  };
+
   return (
     //wajib bungkus dngn animated view
     //kita masukan variable /propsnya panResponderke Animated.View compoenent>
     <Animated.View
+      onPointerDown={handlePress}
+      onTouchStart={() => {
+        if (Platform.OS !== "web") handlePress();
+      }}
       {...panResponder.panHandlers}
       //transform hanya arah x saja
       style={{

@@ -15,6 +15,9 @@ import ItemDetail from "../components/activity/ItemDetail";
 
 export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   const [activities, setActivities] = useState([]);
+  //focusedItem state yg tampung utk trima nilai {...item_ yg diselect disalahsatu ACtivityItem}
+  const [focusedItem, setFocusedItem] = useState(null);
+
   //ini state dibawah adalah utk show on /off visible modal
   const [showItemCreate, setShowItemCreate] = useState(false);
   //state utk scrollEnabled
@@ -193,7 +196,7 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
 
   return (
     <View style={styles.screenContainer}>
-      <ItemDetail />
+      {/* <ItemDetail /> */}
       <ItemCreate
         visible={showItemCreate}
         //addItem fucnton dari parent masik ke anak ItemCreate
@@ -226,6 +229,14 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
             onActivityChange={checkActivity}
             onSwipeStart={() => setScrollEnabled(false)}
             onSwipeEnd={() => setScrollEnabled(true)}
+            //jadi kita akan masukan ini doubleClick funciton sbgai props yg mana
+            //functuon in adalah mensetFocusItem berisi  {..item} atau data activyItem dari storage
+            //masuk kecomponent ItemDetail.js
+            /*
+               <ItemDetail  focusedItem={focusedItem}  />
+
+            */
+            onDoubleClick={() => setFocusedItem({ ...item })} //ini focusedItem ada nilainy ayaitu object item yg saat ini diseelct
           />
         )}
       />
