@@ -7,9 +7,9 @@ import defaultItems from "../data/activities.json";
 import { FlowButton, FlowRow, FlowText } from "../components/overrides";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { loadDayFlowItems, storeDayFlowItems } from "../storage ";
-import { usePrevious } from "../utils/Function";
+import { getCurrentDate, usePrevious } from "../utils/Function";
 import { ItemCreate } from "../components/activity/ItemCreate";
-import { COLORS } from "../variables/styles";
+import { COLORS, SIZES } from "../variables/styles";
 import { MaterialIcons } from "@expo/vector-icons";
 import ItemDetail from "../components/activity/ItemDetail";
 
@@ -18,12 +18,16 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   //focusedItem state yg tampung utk trima nilai {...item_ yg diselect disalahsatu ACtivityItem}
   const [focusedItem, setFocusedItem] = useState(null);
 
-  //ini state dibawah adalah utk show on /off visible modal
+  //showModal ganti disini taruh diparent jadi isItemDetailVisible
+  const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
+
+  //ini state dibawah adalah utk show on /off visible modal utk item.js
   const [showItemCreate, setShowItemCreate] = useState(false);
   //state utk scrollEnabled
   const [scrollEnabled, setScrollEnabled] = useState(true);
 
   //make state time !
+  //time state ini juga di passing ke child itemDetail
   const [time, setTime] = useState(0);
 
   //kita menset utk nilai detiki /tik dgn useRef
@@ -194,13 +198,60 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
     });
   };
 
+  //updateItem
+  const updateItem = (itemData) => {
+    setActivities((activities) => {
+      //variable newactivities cari apakah itemData yg masuk id sama
+      const newActivities = activities.map((a) => {
+        return a.id === itemData.id ? { ...a, ...itemData } : a;
+      });
+      //updatenya kudu diluar wkwkwk!
+      updateTimeOnActiveItem(newActivities);
+      saveToStorage(newActivities);
+      //console.log("updating item =", itemData);
+      return newActivities;
+    });
+  };
+
+  //const utk deleteItem
+  const deleteItem = (itemData) => {
+    //cari activeitem.Id sama dgn itemData.id yg saat ini mau dididlete
+    if (activeItem && activeItem.id === itemData.id) {
+      //matikan smua counter krn ini mau didelte
+      cancelAnimationFrame(timeRequestRef.current);
+      timeRef.current = 0;
+      setTime(0);
+    }
+    // filter dimana itemData,id yg skarang udah gak ikut
+    //dan masukan filter itu ke storage memalui varibale newActivites yg tampung filter tadi!
+    setActivities((activities) => {
+      const newActivites = activities.filter((a) => a.id != itemData.id);
+      saveToStorage(newActivites);
+      return newActivites;
+    });
+    setIsItemDetailVisible(false);
+  };
+
   return (
     <View style={styles.screenContainer}>
+      <FlowRow>
+        <FlowText style={{ color: COLORS.lightGray }}>
+          {getCurrentDate()}
+        </FlowText>
+      </FlowRow>
       <ItemDetail
+        visible={isItemDetailVisible}
         focusedItem={focusedItem}
         //ini dumaksudkan waktu render ItemDetail dari Home.js isi dari focusedItem berisi null
         //jadi bukan undefined
-        onCloseDetail={() => setFocusedItem(null)}
+        onCloseDetail={() => {
+          setIsItemDetailVisible(false);
+          setFocusedItem(null);
+        }}
+        time={time}
+        //masukan props updareItemfunctuon di itemDetail
+        onItemEdit={updateItem}
+        onItemDelete={deleteItem}
       />
 
       <ItemCreate
@@ -210,13 +261,16 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
         //function jadi onCOnfirm() ddalam component anak!
         onConfirm={addItem}
         onClose={() => setShowItemCreate(false)}
+        fullScreen
       />
       <ActivityTimer time={time} title={activeItem?.title} />
       <FlowRow style={styles.listHeading}>
         <FlowText style={styles.text}>Activities</FlowText>
         {/* <FlowText style={styles.text}>Add</FlowText> */}
         <FlowButton
+          style={{ position: "absolute", right: 0 }}
           ghost
+          size={SIZES.fontExtraLarge}
           type="primary"
           onPressIn={() => setShowItemCreate(true)}
           //text={"add"}  //ini kia ganti dgn content
@@ -242,7 +296,11 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
                <ItemDetail  focusedItem={focusedItem}  />
 
             */
-            onDoubleClick={() => setFocusedItem({ ...item })} //ini focusedItem ada nilainy ayaitu object item yg saat ini diseelct
+            onDoubleClick={() => {
+              setFocusedItem({ ...item });
+              setIsItemDetailVisible(true);
+            }} //ini focusedItem ada nilainy ayaitu object item yg saat ini diseelct
+            //ini yg kita/dariparent skrgn nnti pasing func ini jadi props ke item
           />
         )}
       />
@@ -264,6 +322,40 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+/*
+kita mau tampilkan tangal di pojok kiri atas 
+setelah mmbuat delete func kit asekarang buat getCurrentDate  gimana caranya ?? 
+ya
+
+
+*/
+
+/*
+dihomeini saat ini kita buat functuon updateItem dimana nnti kita update item yg kita acktive 
+dan kita akan edit detail dari active ini yg kita sorot saat ini 
+kita bua tfunction updateItem 
+ingat pada flatlis yg dihone :
+ //jadi kita akan masukan ini doubleClick funciton sbgai props yg mana
+            //functuon in adalah mensetFocusItem berisi  {..item} atau data activyItem dari storage
+            //masuk kecomponent ItemDetail.js
+            /*
+               <ItemDetail  focusedItem={focusedItem}  />
+
+            
+               onDoubleClick={() => {
+                setFocusedItem({ ...item });
+                setIsItemDetailVisible(true);
+              }} //ini focusedItem ada nilainy ayaitu o
+
+
+/*
+passign time state ke itemDetail jadi waktu dari parentHome
+mau buka child itemDetail maka kita msesti passing time dan render 
+juga di chilnyd waktunya mesti sama 
+
+
+*/
 
 /*
 setelah ini kita akah buat detail page item jadi ,ktika kita klik aatau double klik item maka aka

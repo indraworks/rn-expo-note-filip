@@ -16,6 +16,7 @@ export const FlowButton = ({
   disabled,
   type,
   style,
+  size,
   ...rest
 }) => {
   const webOnly = Platform.OS === "web" ? { userSelect: "none" } : {};
@@ -30,6 +31,7 @@ export const FlowButton = ({
 
   const isGhost = ghost ?? false;
   const isDisabled = disabled ?? false;
+  const _size = size ?? SIZES.fontSmall;
 
   //tanda ?? ini adalah utk check null dan undefined maka dia false!
 
@@ -43,9 +45,10 @@ export const FlowButton = ({
 
   const textStyle = isGhost
     ? //jamgan taruh color aja karena color adalah ibjec jadi harus {color} bukan color  aja!
-      { color: isDisabled ? COLORS.semiDarkGray : color }
+      { color: isDisabled ? COLORS.semiDarkGray : color, fontSize: _size }
     : {
         color: isDisabled ? COLORS.darkGray : COLORS.white,
+        fontSize: _size,
       };
 
   return (
@@ -63,7 +66,7 @@ export const FlowButton = ({
       {typeof Content === "string" ? (
         <Text style={{ ...textStyle }}>{Content}</Text>
       ) : (
-        <Content size={SIZES.fontExtraLarge} color={textStyle.color} />
+        <Content size={_size} color={textStyle.color} />
       )}
     </Pressable>
   );

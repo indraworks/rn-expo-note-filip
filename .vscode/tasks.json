@@ -1,0 +1,18 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Android Emulator",
+            "type": "shell",
+            "command": "emualator -avd Pixel_7a",
+            "problemMatcher":[]
+            ,"group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Start the specified Android emulator"
+        }
+    ]
+}

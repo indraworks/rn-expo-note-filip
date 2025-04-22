@@ -4,7 +4,7 @@ import { FlowModal, FlowText, FlowRow, FlowButton } from "../overrides";
 import { useState } from "react";
 import { generateRandomId } from "../../utils/Function";
 
-export const ItemCreate = ({ visible, onClose, onConfirm }) => {
+export const ItemCreate = ({ visible, onClose, onConfirm, fullScreen }) => {
   //buat state newItem
   const [newItem, setNewItem] = useState({
     title: "",
@@ -12,6 +12,11 @@ export const ItemCreate = ({ visible, onClose, onConfirm }) => {
     isActivate: false,
     time: 0,
   });
+
+  /*
+    kit ajuga buat utk delete button 
+
+   */
 
   /*
    pada Parent Home.js
@@ -51,6 +56,7 @@ export const ItemCreate = ({ visible, onClose, onConfirm }) => {
   };
   return (
     <FlowModal
+      fullScreen={fullScreen}
       visible={visible}
       animationType={"fade"}
       bgColor={COLORS.semiDarkGray}
