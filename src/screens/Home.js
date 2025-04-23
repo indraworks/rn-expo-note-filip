@@ -324,6 +324,12 @@ const styles = StyleSheet.create({
 });
 
 /*
+stlah ini kita ada di APp.js dimana kit abuat 1 screen tambahan yg tadi hanaya Home.js 
+ada tutorial.js nah ini nnti duunculkan lewatmodal yg ada sbgai pmbugkus tutorial.js 
+
+*/
+
+/*
 kita mau tampilkan tangal di pojok kiri atas 
 setelah mmbuat delete func kit asekarang buat getCurrentDate  gimana caranya ?? 
 ya

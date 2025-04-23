@@ -86,7 +86,7 @@ export const ActivityItem = ({
   ).current;
 
   //kita buat disini utk background dimana akan brubah jika isACtive true !
-  const itemBackgroundActive = isActive
+  const itemBackground = isActive
     ? { backgroundColor: COLORS.semiDarkGray }
     : { backgroundColor: COLORS.darkGray };
 
@@ -129,7 +129,7 @@ export const ActivityItem = ({
     >
       <FlowHighLightView
         //ini tambahan ...itemBackgroundActive akan ubah warna container jika dia bergerak kekakanan warna jadi abu muda!
-        style={{ ...StyleSheet.itemContainer, ...itemBackgroundActive }}
+        style={{ ...StyleSheet.itemContainer, ...itemBackground }}
       >
         <FlowRow style={styles.row}>
           <FlowText>{title}</FlowText>

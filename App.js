@@ -4,6 +4,7 @@ import { ActivityHomeScreen } from "./src/screens/Home";
 import { COLORS } from "./src/variables/styles";
 import { useEffect, useState } from "react";
 import { isAsyncStorageEnabled } from "./src/storage ";
+import { TutorialScreen } from "./src/screens/Tutorial";
 
 export default function App() {
   const [isStorageEnabled, setIsStorageEnable] = useState(null);
@@ -33,7 +34,10 @@ export default function App() {
         {isStorageEnabled == null ? (
           <></>
         ) : (
-          <ActivityHomeScreen isStorageEnabled={isStorageEnabled} />
+          <>
+            <TutorialScreen visible={true} />
+            <ActivityHomeScreen isStorageEnabled={isStorageEnabled} />
+          </>
         )}
 
         <StatusBar style="light" />
@@ -56,6 +60,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+/*
+di app js kit amasuka tutorial screen dimana  kita kasuh tahu pemakai 
+nah ditutorialscreen kita buat sbb:
+utk urutan 1 adalah step1  activkan item 
+                    setep2 deactive item 
+                    seteo3 kita menuju ke itemDetail
+nah step2 in kita masukan dalam state 
+
+*/
 
 /*
 pada app.js view kita hilangkan ganti 
