@@ -46,24 +46,43 @@ export const TutorialScreen = ({ visible }) => {
   //pan = kooridnat awal ,tovalue = tujuan langkah 150pixel ,duration lamanya animasti gerak kekanana
   //kita buat loop  yaitu Amimated.loop
   const animatedSwipe = () => {
+    //func swipping
     const swipping = Animated.timing(pan, {
       toValue: directionRef.current,
       delay: 1000,
       duration: 2000,
       useNativeDriver: false,
     });
-    //syarat gerao sndiri
-    const loop = (animationRef.current = Animated.loop(swipping));
+    //syarat gerak sndiri
+    //sesudah step2 kita baut defaultPos utk arah 0 supaya ada jeda bereti dulu dari kanan ->kekiri
+    //const loop = (animationRef.current = Animated.loop(swipping));
+    //baris atas kita ganti  dgn variable sequence dimaan pakai defaultPos
+    const defaultPos = Animated.timing(pan, {
+      toValue: 0,
+      duration: 0,
+      useNativeDriver: false,
+    });
+    const sequenceFunc = Animated.sequence([defaultPos, swipping]);
+    const loop = (animationRef.current = Animated.loop(sequenceFunc));
     loop.start();
   };
 
   //useEffect sbbkan ini akan gerak <PreviewItem /> jika step ==1 deteksinya disini
   useEffect(() => {
     if (step === 1) {
+      //kekanan
       directionRef.current = 150;
       animatedSwipe(); //invoke function
-      //nah nti yg gerak PreviewItem karna dia adalah benda /object yg berada pada pan( = animated.value(0))
+      //nah nti yg gerak PreviewItem karna dia adalah benda /object
+      // //yg berada pada pan( = animated.value(0))
     }
+
+    if (step === 2) {
+      //kekanan
+      directionRef.current = -150;
+      animatedSwipe(); //invoke function
+    }
+
     return () => {
       animationRef.current?.reset();
     };
@@ -79,6 +98,7 @@ export const TutorialScreen = ({ visible }) => {
       setStep(step - 1);
     }
   };
+
   //const aninmatedStyle berisi utk tranent mama yg nnti dikenai supaay dia bergrak yaitu PreviewUtem
   //const animatensform gerak kebdang horisontal dgn translateX
   //dimana compodStyle = {
@@ -103,7 +123,12 @@ export const TutorialScreen = ({ visible }) => {
         )}
         {step === 2 && (
           <View>
-            <FlowText>Step 2</FlowText>
+            <View style={{ marginBottom: 20 }}>
+              <FlowText>To Start tracking ,swipe left</FlowText>
+            </View>
+            <Animated.View style={animatedStyle}>
+              <PreviewItem />
+            </Animated.View>
           </View>
         )}
         {step === 3 && (
@@ -134,6 +159,30 @@ export const TutorialScreen = ({ visible }) => {
     </FlowModal>
   );
 };
+
+/*Handle step 2
+
+
+sama stpei diatas utk  directionref.current kita ganti  = -150 (kekiri)
+ kemudian update useEffectnya sbb (tambahin step2 ):
+  if (step === 2) {
+      //kekanan 
+      directionRef.current = 150;
+      animatedSwipe(); //invoke function
+      
+    }
+
+danjangan lupa kita pakai sequence dan kita mesti buat defaultPos varibale 
+utk pan yg isinya tetaosama  yaitu 0
+yg isinya berupa animated.timing(pan,{toValue:0,duraiton:0,useNativeDriver:false})
+jadi defaultPos = animated.timing(pan,{toValue:0,duration:0,useNativeDriver:false})
+nah kita pakai sequence utk hundari patah2 dari kanan ke kiri nol dulu trus kekiri 
+const srquence = Animated.sequence(defaultPos,swipping)
+swiping tadi function yg isinya  directioRef.current =150 ,dan directioRef.current =-150 pada step2 
+
+
+*/
+
 /*
 kit audah melakukan utk sippingRight dan sudah benar hanya saja ktika dibacl dia ada 
 stuck gak balik utk itu kita perlu rset nah utk rset dibaut  useRef(0) masukan divar animationRef 
