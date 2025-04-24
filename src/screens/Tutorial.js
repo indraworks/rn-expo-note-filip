@@ -1,5 +1,5 @@
-import { View, Text } from "react-native";
-import React, { useState } from "react";
+import { View, Text, Animated } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import { ActivityItem } from "../components/activity/Item";
 import {
   FlowText,
@@ -8,25 +8,25 @@ import {
   FlowRow,
 } from "../components/overrides";
 import { COLORS } from "../variables/styles";
+
 //buat const max-step
 const MAX_STEPS = 3;
 //empty funct
 const empty = () => {};
 
-//
-const PreviewItem = () => {
+//PreviewItem
+const PreviewItem = () => (
   //kalau component ingin dimunculkan maka harus ada return
-  return (
-    <ActivityItem
-      title={"Preview"}
-      time={0}
-      onActivityChange={empty}
-      onSwipeStart={empty}
-      onSwipeEnd={empty}
-      onDoubleClick={empty}
-    />
-  );
-};
+
+  <ActivityItem
+    title={"Preview"}
+    time={0}
+    onActivityChange={empty}
+    onSwipeStart={empty}
+    onSwipeEnd={empty}
+    onDoubleClick={empty}
+  />
+);
 
 export const TutorialScreen = ({ visible }) => {
   const [step, setStep] = useState(1);
@@ -34,6 +34,41 @@ export const TutorialScreen = ({ visible }) => {
   const canGoNext = step < MAX_STEPS;
   const canGoBack = step > 1;
   //buat func utk tambah state step
+  const pan = useRef(new Animated.Value(0)).current;
+  //directionya arah postif sebesar 150pixer ( jadi arah kanan)
+  const directionRef = useRef(150);
+  //utk reset animation
+  const animationRef = useRef(null);
+
+  //kmudian kita buat animatedSwipe pakai timing berapa lama duration gerak kekanan
+  //ini kita pakai transform:[{translateX:pan}] // translateX adalah arah datar/horisontal
+  //dimana pan = nilai ref = 0
+  //pan = kooridnat awal ,tovalue = tujuan langkah 150pixel ,duration lamanya animasti gerak kekanana
+  //kita buat loop  yaitu Amimated.loop
+  const animatedSwipe = () => {
+    const swipping = Animated.timing(pan, {
+      toValue: directionRef.current,
+      delay: 1000,
+      duration: 2000,
+      useNativeDriver: false,
+    });
+    //syarat gerao sndiri
+    const loop = (animationRef.current = Animated.loop(swipping));
+    loop.start();
+  };
+
+  //useEffect sbbkan ini akan gerak <PreviewItem /> jika step ==1 deteksinya disini
+  useEffect(() => {
+    if (step === 1) {
+      directionRef.current = 150;
+      animatedSwipe(); //invoke function
+      //nah nti yg gerak PreviewItem karna dia adalah benda /object yg berada pada pan( = animated.value(0))
+    }
+    return () => {
+      animationRef.current?.reset();
+    };
+  }, [step]);
+
   const goNext = () => {
     if (canGoNext) {
       setStep(step + 1);
@@ -44,6 +79,13 @@ export const TutorialScreen = ({ visible }) => {
       setStep(step - 1);
     }
   };
+  //const aninmatedStyle berisi utk tranent mama yg nnti dikenai supaay dia bergrak yaitu PreviewUtem
+  //const animatensform gerak kebdang horisontal dgn translateX
+  //dimana compodStyle = {
+  //utk sbgai bungkus /wrapper compoent mana yg dikenai animated supaya gerak
+  const animatedStyle = {
+    transform: [{ translateX: pan }],
+  };
 
   return (
     <FlowModal visible={visible} bgColor={COLORS.lightBlack}>
@@ -53,7 +95,10 @@ export const TutorialScreen = ({ visible }) => {
             <View style={{ marginBottom: 20 }}>
               <FlowText>To start tracking, swipe right.</FlowText>
             </View>
-            <PreviewItem />
+            {/* wajib dibungkus ANiamted.View dan pilih stylenya !  */}
+            <Animated.View style={animatedStyle}>
+              <PreviewItem />
+            </Animated.View>
           </View>
         )}
         {step === 2 && (
@@ -89,9 +134,28 @@ export const TutorialScreen = ({ visible }) => {
     </FlowModal>
   );
 };
+/*
+kit audah melakukan utk sippingRight dan sudah benar hanya saja ktika dibacl dia ada 
+stuck gak balik utk itu kita perlu rset nah utk rset dibaut  useRef(0) masukan divar animationRef 
+stlahnya apda saat useEffect kita tambahkan return  func yg brisi animationRef tadi kita reset  
+return ()=> {
+    animationRef.current?.reset()
+  }
+    dan pada saat loop juga kita masukan animationRef.current 
+    shingga ktika useEffect nnti ini jadi berpengaruh /ada kliatan resetnya!
+    const loop = animationRef.current = Animated.loop(swipping)
+
+*/
 
 /*
-2)
+buat animasi jika user enter 1  kit apakai animasi gerak kekakann berapa pixel 
+kita pakai pan utk mmbuat animasi dgn memasukan ref statrnya 
+jadi masukan nilai ancer2 utk nnti dianimation sblum bergerak atau berpindah  kita gunakan useREF
+pan = useRef(new Animated.Value(0)).current
+*/
+
+/*
+2) buat Previee Item done
 stlahnya kita oerly activityItem itu kita ambil atau copy nah nnti dalanya ...Item 
 kita isikan saha Ititle dan time kosongan yg lainya utk function kita buat empty functuon 
 ah nnti ini tutorial steep 1 akan kita buat gerak animation geser kanan saja 
