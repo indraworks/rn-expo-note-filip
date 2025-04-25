@@ -15,10 +15,12 @@ const MAX_STEPS = 3;
 const empty = () => {};
 
 //PreviewItem
-const PreviewItem = () => (
+const PreviewItem = ({ isActive }) => (
   //kalau component ingin dimunculkan maka harus ada return
-
+  //nah activity item ini terima isActive  akan kluarkan dot2 nya
+  //jika is active = true kluar kedap2 kedip dot ( pnjelasa di doc!)
   <ActivityItem
+    isActive={isActive}
     title={"Preview"}
     time={0}
     onActivityChange={empty}
@@ -40,6 +42,7 @@ export const TutorialScreen = ({ visible }) => {
   //utk reset animation
   const animationRef = useRef(null);
 
+  const [isActive, setIsActive] = useState(false);
   //kmudian kita buat animatedSwipe pakai timing berapa lama duration gerak kekanan
   //ini kita pakai transform:[{translateX:pan}] // translateX adalah arah datar/horisontal
   //dimana pan = nilai ref = 0
@@ -47,6 +50,7 @@ export const TutorialScreen = ({ visible }) => {
   //kita buat loop  yaitu Amimated.loop
   const animatedSwipe = () => {
     //func swipping
+    //jadi pan berisi angka tadi useRef
     const swipping = Animated.timing(pan, {
       toValue: directionRef.current,
       delay: 1000,
@@ -67,9 +71,26 @@ export const TutorialScreen = ({ visible }) => {
     loop.start();
   };
 
+  //pan addListener adalah functuon builtin yg mana dia akan deteksi value yg masuk atau increase
+  //jika nilai pan sama  dgn directionRed.current yaitu 150 maka isACtive = true ini jadikan blik2
+  //nah ut kekiri memang isActive dibuat false tidak diactiveKAN!
+  pan.addListener(({ value }) => {
+    if (value === directionRef.current) {
+      if (step === 1) {
+        setIsActive(true);
+      }
+      if (step === 2) {
+        setIsActive(false);
+      }
+    }
+  });
+
   //useEffect sbbkan ini akan gerak <PreviewItem /> jika step ==1 deteksinya disini
   useEffect(() => {
     if (step === 1) {
+      setIsActive(false); //mula2 false krn step =1 ,nah pan.addlistener gerak nilainya -> sampai 150 ,
+      //maka value pan = 150 stlahnya iniada dikanan dan activeItem akan blink!2
+      // setActive jadi true dikanan
       //kekanan
       directionRef.current = 150;
       animatedSwipe(); //invoke function
@@ -78,7 +99,10 @@ export const TutorialScreen = ({ visible }) => {
     }
 
     if (step === 2) {
-      //kekanan
+      setIsActive(true); //diatas steap2 nah activeItem masih blink2 dari  kanan gerak kekiri  atau jika ndisi diam
+      //gerak kekiri masih blink2
+      //
+      //kekiri
       directionRef.current = -150;
       animatedSwipe(); //invoke function
     }
@@ -117,7 +141,7 @@ export const TutorialScreen = ({ visible }) => {
             </View>
             {/* wajib dibungkus ANiamted.View dan pilih stylenya !  */}
             <Animated.View style={animatedStyle}>
-              <PreviewItem />
+              <PreviewItem isActive={isActive} />
             </Animated.View>
           </View>
         )}
@@ -159,6 +183,12 @@ export const TutorialScreen = ({ visible }) => {
     </FlowModal>
   );
 };
+
+/*
+PreviewActive kita uga mau activekan supaya tanda active muncul utk itu kita set isActive,setIsactive 
+jadi utk step1 isActive = false utk step2= isActive = true 
+ jadi kita gunaka pan.add
+*/
 
 /*Handle step 2
 
