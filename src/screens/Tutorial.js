@@ -19,8 +19,10 @@ const PreviewItem = ({ isActive }) => (
   //kalau component ingin dimunculkan maka harus ada return
   //nah activity item ini terima isActive  akan kluarkan dot2 nya
   //jika is active = true kluar kedap2 kedip dot ( pnjelasa di doc!)
+  //activiyitem dtiambah property props controls utk supaya user gak bisa tarik2 /geser2 ini didisable
   <ActivityItem
     isActive={isActive}
+    controls={false}
     title={"Preview"}
     time={0}
     onActivityChange={empty}
@@ -35,12 +37,15 @@ export const TutorialScreen = ({ visible }) => {
   //buat const stepBACk and stepNext dimana masing2  < Nax ,> 1
   const canGoNext = step < MAX_STEPS;
   const canGoBack = step > 1;
-  //buat func utk tambah state step
+  //buat variable pan berisi nilai nnti yg bisa  dipakai utk dianimasi
   const pan = useRef(new Animated.Value(0)).current;
+  //buat sama diatas  tapi name scale
+  const scale = useRef(new Animated.Value(1)).current;
   //directionya arah postif sebesar 150pixer ( jadi arah kanan)
   const directionRef = useRef(150);
   //utk reset animation
   const animationRef = useRef(null);
+  const timeoutRef = useRef(null);
 
   const [isActive, setIsActive] = useState(false);
   //kmudian kita buat animatedSwipe pakai timing berapa lama duration gerak kekanan
@@ -71,19 +76,19 @@ export const TutorialScreen = ({ visible }) => {
     loop.start();
   };
 
-  //pan addListener adalah functuon builtin yg mana dia akan deteksi value yg masuk atau increase
-  //jika nilai pan sama  dgn directionRed.current yaitu 150 maka isACtive = true ini jadikan blik2
-  //nah ut kekiri memang isActive dibuat false tidak diactiveKAN!
-  pan.addListener(({ value }) => {
-    if (value === directionRef.current) {
-      if (step === 1) {
-        setIsActive(true);
-      }
-      if (step === 2) {
+  //useEffect yg ke 2 utk buat timeout (penjelassan dibawah )
+  useEffect(() => {
+    if (step === 1 && isActive) {
+      timeoutRef.current = setTimeout(() => {
         setIsActive(false);
-      }
+      }, 900);
     }
-  });
+    if (step === 2 && !isActive) {
+      timeoutRef.current = setTimeout(() => {
+        setIsActive(true);
+      }, 900);
+    }
+  }, [isActive]);
 
   //useEffect sbbkan ini akan gerak <PreviewItem /> jika step ==1 deteksinya disini
   useEffect(() => {
@@ -106,11 +111,34 @@ export const TutorialScreen = ({ visible }) => {
       directionRef.current = -150;
       animatedSwipe(); //invoke function
     }
+    if (step === 3) {
+      setIsActive(false);
+      animatedDoubleTap();
+    }
 
     return () => {
       animationRef.current?.reset();
+      //nah dibagian pas rset ini kita baut timeOutnya cancel disini
+      //pas dimana dia mis naimateRef,curent.reset
+      //disaat itu kita cleatTImeout juga tieoutRef.current braoapun nilai timeOutRef.current saat itu
+      clearTimeout(timeoutRef.current);
     };
   }, [step]);
+
+  //pan addListener adalah functuon builtin yg mana dia akan deteksi value yg masuk atau increase
+  //jika nilai pan sama  dgn directionRed.current yaitu 150 maka isACtive = true ini jadikan blik2
+  //nah ut kekiri memang isActive dibuat false tidak diactiveKAN!
+  pan.addListener(({ value }) => {
+    if (value === directionRef.current) {
+      if (step === 1) {
+        setIsActive(true);
+      }
+      if (step === 2) {
+        setIsActive(false);
+      }
+      //utk 3 gak perlu karena setActive memang sudah false dari 2 gak perlu berubah lagi statenya !
+    }
+  });
 
   const goNext = () => {
     if (canGoNext) {
@@ -123,17 +151,51 @@ export const TutorialScreen = ({ visible }) => {
     }
   };
 
+  //funcuon doubleKcikc dgn animateDoubleTap
+  const animatedDoubleTap = () => {
+    const sequence = Animated.sequence([
+      Animated.delay(2000),
+      Animated.timing(scale, {
+        toValue: 1.1, //mmbesar 1.1
+        duration: 150,
+        useNativeDriver: false,
+      }),
+      Animated.timing(scale, {
+        toValue: 1, //mengecil
+        duration: 150,
+        useNativeDriver: false,
+      }),
+      //2X
+      Animated.timing(scale, {
+        toValue: 1.1, //mmbesar 1.1
+        duration: 150,
+        useNativeDriver: false,
+      }),
+      Animated.timing(scale, {
+        toValue: 1, //kmbali kecil
+        duration: 150,
+        useNativeDriver: false,
+      }),
+    ]);
+    const loop = (animationRef.current = Animated.loop(sequence));
+    loop.start();
+  };
+
   //const aninmatedStyle berisi utk tranent mama yg nnti dikenai supaay dia bergrak yaitu PreviewUtem
   //const animatensform gerak kebdang horisontal dgn translateX
   //dimana compodStyle = {
   //utk sbgai bungkus /wrapper compoent mana yg dikenai animated supaya gerak
+  //AnimatedStylenya kita tambahkan utk variable scale yaitu {scale }
   const animatedStyle = {
-    transform: [{ translateX: pan }],
+    transform: [{ translateX: pan }, { scale }],
   };
 
   return (
     <FlowModal visible={visible} bgColor={COLORS.lightBlack}>
       <View style={{ marginBottom: 10 }}>
+        <FlowText style={{ fontWeight: "bold" }}>
+          {step} of {MAX_STEPS}
+        </FlowText>
         {step === 1 && (
           <View>
             <View style={{ marginBottom: 20 }}>
@@ -151,13 +213,19 @@ export const TutorialScreen = ({ visible }) => {
               <FlowText>To Start tracking ,swipe left</FlowText>
             </View>
             <Animated.View style={animatedStyle}>
-              <PreviewItem />
+              <PreviewItem isActive={isActive} />
             </Animated.View>
           </View>
         )}
         {step === 3 && (
           <View>
-            <FlowText>Step 3</FlowText>
+            <View style={{ marginBottom: 20 }}>
+              <FlowText>Double CLick to See Detail </FlowText>
+            </View>
+
+            <Animated.View style={animatedStyle}>
+              <PreviewItem isActive={isActive} />
+            </Animated.View>
           </View>
         )}
       </View>
@@ -185,9 +253,41 @@ export const TutorialScreen = ({ visible }) => {
 };
 
 /*
+Disable control ,pada item masih bisa digerak2 an nah ada functuon pa
+
+
+
+
+*/
+
+/*
+penambaha useEffect  yg ke-2 utk detect timeOut Reference jadi gini itu blink kalau udah di tempat netral 
+ada jeda dia mati sbntar kalau dari gerak --kekanan blink muncul atau isActive = true nah pas balik di titik 0 dia harus nol 
+ada jead 900ms utk nol gak ada blik  dan utk arah 0 -->kekiri juga gitu sama! 
+nah utk itu kita buat timeoutRef = useRef(null) 
+dan kita buat useEffect lagi 
+      //jadi ktika step =1 dan isactive =true amak kita buat time outREf current = 900 nnti dia delay selama 900ms menuju null 
+    if (step1 === 1 && isActive) {
+       timeoutRef.current = setTimeout(() => {
+         setIsActive(false);
+       }, 900);
+     }
+ 
+     /jadi ktika step2 =1 dan isactive =false amak kita buat time outREf current = 900 nnti dia delay selama 900ms menuju null 
+     if (step2 === 1 && !isActive) {
+       timeoutRef.current = setTimeout(() => {
+         setIsActive(false);
+       }, 900);
+ nah nnti isi timeoutRefnya ini kita msaukan ke useEffec yg pertama  dgn cara reset timeout-nya 
+ dgn functuon ckearTimeout() !! utk cancel atau reset ini jadi null lagi  nilai timeoutRef.currentnya ! 
+
+
+*/
+
+/*
 PreviewActive kita uga mau activekan supaya tanda active muncul utk itu kita set isActive,setIsactive 
 jadi utk step1 isActive = false utk step2= isActive = true 
- jadi kita gunaka pan.add
+ jadi kita gunaka pan.addListener 
 */
 
 /*Handle step 2

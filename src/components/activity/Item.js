@@ -18,6 +18,7 @@ export const ActivityItem = ({
   onSwipeStart,
   onSwipeEnd,
   onDoubleClick,
+  controls, //kita defaultnya adalah false
 }) => {
   const pan = useRef(new Animated.ValueXY()).current; //menetapkan ref animasi daam variable pan
   //dimana utk tentukan arah x ,arah y waktu move!
@@ -25,6 +26,7 @@ export const ActivityItem = ({
   //isSwiping diatruh di ref useRef biar gak re-render
   const isSwipping = useRef(false);
   const lastPressTimeRef = useRef(0);
+  const canControl = controls ?? true;
 
   const panResponder = useRef(
     PanResponder.create({
@@ -108,6 +110,9 @@ export const ActivityItem = ({
       lastPressTimeRef.current = currentTime;
     }
   };
+  //update panRespinder.panHandlers  lewat props canControl
+  //jika control bernilai false maka panResponder.panHandlers active
+  const handlers = canControl ? panResponder.panHandlers : null;
 
   return (
     //wajib bungkus dngn animated view
@@ -117,8 +122,11 @@ export const ActivityItem = ({
       onTouchStart={() => {
         if (Platform.OS !== "web") handlePress();
       }}
-      {...panResponder.panHandlers}
-      //transform hanya arah x saja
+      //nah geser2 dari Active iten ini ditentukan oleh function panResponde.panHandler
+      //jadi diatas panResponder dicreate object berisi nilai
+      //dan method panHandlers lah yg buat dia megarahkan ke titk2 mana digeser memalui embed style ={{}}
+      //{...panResponder.panHandlers} diganti dgn handlers utk simulasi guide user
+      {...handlers}
       style={{
         //ktika dklik gak boleh ada action
         touchAction: "none",
@@ -150,7 +158,13 @@ export const ActivityItem = ({
 yg item sekarang kita ganti ada props masuk 
 karena kita akan gunakan sebagi re-use component pada screen 
 
-
+//nah geser2 dari Active iten ini ditentukan oleh function panResponde.panHandler 
+      //jadi diatas panResponder dicreate object berisi nilai 
+      //dan method panHandlers lah yg buat dia megarahkan ke titk2 mana digeser memalui embed style ={{}}
+      {...panResponder.panHandlers}
+      nah jadi ini kita ubah dgn buat tadi control  nah KITA TUJUAN MAU DISABLE KAN utk tujuan pada step 3 
+      maka const handlers = canControl ? panResponder.panHandlers:null 
+      nah nnti itu  {...panResponder.panHandlers} kita ganti sinya jadi {...}
 */
 
 const styles = StyleSheet.create({
@@ -166,6 +180,17 @@ const styles = StyleSheet.create({
     color: COLORS.brightGreen,
   },
 });
+
+/*
+ingat itenrary ?? 
+mis const a = value_a?? true 
+maka jika value_a bernilai "null" atau undefined maka otomotis
+ hasil adalah true ,dan akan disimpan di variable a 
+ tapi jika  value_a bernilai sebarang number atau false maka 
+ a akan bernilai sesuai dgn  apa yg ada di  value_a 
+
+
+*/
 
 /*PanResponder :ini adalah aninamated utk drag dan drop dari core react-native
 kalau kita pake panGestureHandler ini lebih modern utk yabg ini kita pake yg panResponder!
