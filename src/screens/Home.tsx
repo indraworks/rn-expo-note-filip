@@ -1,4 +1,5 @@
-import { FlatList, StyleSheet, View, Text, Platform } from "react-native";
+import { FlatList, View, Text, Platform } from "react-native";
+import styled from "styled-components/native";
 import { ActivityTimer } from "../components/activity/Timer";
 import { ActivityItem } from "../components/activity/Item";
 //kita kasih alias defaulItems adalah data awal dari json kita !
@@ -233,7 +234,7 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
   };
 
   return (
-    <View style={styles.screenContainer}>
+    <ScreenContainer>
       <FlowRow>
         <FlowText style={{ color: COLORS.lightGray }}>
           {getCurrentDate()}
@@ -264,8 +265,8 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
         fullScreen
       />
       <ActivityTimer time={time} title={activeItem?.title} />
-      <FlowRow style={styles.listHeading}>
-        <FlowText style={styles.text}>Activities</FlowText>
+      <StyledHeading>
+        <HeadingText>Activities</HeadingText>
         {/* <FlowText style={styles.text}>Add</FlowText> */}
         <FlowButton
           style={{ position: "absolute", right: 0 }}
@@ -276,7 +277,7 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
           //text={"add"}  //ini kia ganti dgn content
           content={(props) => <MaterialIcons name="playlist-add" {...props} />}
         />
-      </FlowRow>
+      </StyledHeading>
       <FlatList
         //nama staenya nya sama dgn anama prperty
         scrollEnabled={scrollEnabled}
@@ -304,24 +305,24 @@ export const ActivityHomeScreen = ({ isStorageEnabled }) => {
           />
         )}
       />
-    </View>
+    </ScreenContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    width: "100%",
-  },
-  listHeading: {
-    justifyContent: "space-between",
-    paddingVertical: 10,
-  },
-  text: {
-    fontSize: 17,
-    fontWeight: "bold",
-  },
-});
+const ScreenContainer = styled.View`
+  flex: 1;
+  width: 100%;
+`;
+
+const StyledHeading = styled(FlowRow)`
+  justify-content: space-between;
+  padding-vertical: 10px;
+`;
+
+const HeadingText = styled(FlowText)`
+  font-size: 17px;
+  font-weight: bold;
+`;
 
 /*
 stlah ini kita ada di APp.js dimana kit abuat 1 screen tambahan yg tadi hanaya Home.js 

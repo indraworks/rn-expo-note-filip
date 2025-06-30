@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import { Text, StyleSheet, Animated, View, Easing } from "react-native";
+import { Text, Animated, View, Easing } from "react-native";
+import styled from "styled-components/native";
 import { FlowRow } from "../overrides";
 import { COLORS } from "../../variables/styles";
 //kita gunaka useEref utk tampiung value dan utk maksud adalah jika ada pribahan tak perlu di re-render
@@ -113,10 +114,7 @@ const LoadingDots = ({ color }) => {
           => return {}
       */}
       {dotOpacities.map((opacity, index) => (
-        <Animated.View
-          key={`dot-${index}`}
-          style={{ ...styles.dot, opacity, backgroundColor: dotColor }}
-        />
+        <Dot key={`dot-${index}`} style={{ opacity, backgroundColor: dotColor }} />
       ))}
     </FlowRow>
 
@@ -130,13 +128,10 @@ const LoadingDots = ({ color }) => {
 //colornya bisa berubah warna kita bisa jadikan props
 //cara nambahkan style yg sudah ada dgn ada poprerty style dari luar sbb
 //yaitu:style={{ ...styles.dot, opacity ,backgroundColor:dotColor}}
-const styles = StyleSheet.create({
-  dot: {
-    //backgroundColor: COLORS.brightGreen, --ini kita ganti dgn variable dari luar
-    width: 8,
-    height: 8,
-    borderRadius: 5,
-    marginHorizontal: 5,
-  },
-});
+const Dot = styled(Animated.View)`
+  width: 8px;
+  height: 8px;
+  border-radius: 5px;
+  margin-horizontal: 5px;
+`;
 export default LoadingDots;

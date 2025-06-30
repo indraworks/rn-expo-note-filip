@@ -1,4 +1,5 @@
-import { Modal, Platform, StyleSheet, View } from "react-native";
+import { Modal, Platform, View } from "react-native";
+import styled from "styled-components/native";
 import { COLORS } from "../../variables/styles";
 import Constants from "expo-constants"; //ut tahu status aplikasi saat ini app platofro,devie,verion ,manifest data.Environtment
 //variable  biasanya sdah default bersama expo
@@ -40,33 +41,25 @@ export const FlowModal = ({
 
   return (
     <Modal animationType={animationType} transparent={true} visible={visible}>
-      <View
-        style={{ ...styles.modalContainer, ...containerStyles, ...webStyles }}
-      >
+      <ModalContainer style={{ ...containerStyles, ...webStyles }}>
         {/* utk background contentnya bisa kita tambahkan dari luar/props */}
-        <View
-          style={{
-            ...styles.modalContent,
-            backgroundColor: defaultBgColor,
-          }}
-        >
+        <ModalContent style={{ backgroundColor: defaultBgColor }}>
           {children}
-        </View>
-      </View>
+        </ModalContent>
+      </ModalContainer>
     </Modal>
   );
 };
 
-const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-  },
-  modalContent: {
-    minWidth: 350,
-    padding: 20,
-    borderRadius: 10,
-  },
-});
+const ModalContainer = styled.View`
+  flex: 1;
+`;
+
+const ModalContent = styled.View`
+  min-width: 350px;
+  padding: 20px;
+  border-radius: 10px;
+`;
 
 /*
 ingat Modal bawaan component dalam React 

@@ -1,8 +1,7 @@
-import React from "react";
 import { useEffect, useRef } from "react";
 
-export const usePrevious = (value) => {
-  const ref = useRef(0);
+export const usePrevious = <T,>(value: T) => {
+  const ref = useRef<T | undefined>(undefined);
 
   useEffect(() => {
     //state dimasukan ref.current
@@ -14,7 +13,7 @@ export const usePrevious = (value) => {
 };
 
 //function display timer from miliseconds
-export const formatTime = (milliseconds) => {
+export const formatTime = (milliseconds: number) => {
   let totalSeconds = Math.floor(milliseconds / 1000);
   let hours = Math.floor(totalSeconds / 3600);
   let minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -28,7 +27,7 @@ export const formatTime = (milliseconds) => {
   return `${hours}:${minutes}:${seconds}`;
 };
 
-export const generateRandomId = (length = 10) => {
+export const generateRandomId = (length: number = 10) => {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let randomId = "";

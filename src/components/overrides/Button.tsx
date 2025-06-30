@@ -1,5 +1,6 @@
 import React from "react";
-import { Pressable, Text, Platform } from "react-native";
+import { Platform } from "react-native";
+import styled from "styled-components/native";
 import { COLORS, SIZES } from "../../variables/styles";
 
 //kita buat colir utk type yg akan masuk sbgai warna2
@@ -35,42 +36,53 @@ export const FlowButton = ({
 
   //tanda ?? ini adalah utk check null dan undefined maka dia false!
 
-  const buttonStyle = isGhost
-    ? { backgroundColor: "transparent" }
-    : {
-        backgroundColor: isDisabled ? COLORS.semiDarkGray : color,
-        padding: 10,
-        borderRadius: 5,
-      };
-
-  const textStyle = isGhost
-    ? //jamgan taruh color aja karena color adalah ibjec jadi harus {color} bukan color  aja!
-      { color: isDisabled ? COLORS.semiDarkGray : color, fontSize: _size }
-    : {
-        color: isDisabled ? COLORS.darkGray : COLORS.white,
-        fontSize: _size,
-      };
+  const buttonBg = isDisabled ? COLORS.semiDarkGray : color;
+  const textColor = isGhost
+    ? isDisabled
+      ? COLORS.semiDarkGray
+      : color
+    : isDisabled
+    ? COLORS.darkGray
+    : COLORS.white;
 
   return (
-    <Pressable
+    <ButtonContainer
       disabled={isDisabled}
       {...rest}
-      style={{ ...buttonStyle, ...style, ...webOnly }}
+      style={{ ...style, ...webOnly }}
+      isGhost={isGhost}
+      backgroundColor={buttonBg}
     >
-      {/* yg tadi text={} di itemCreate  kita ganti dgn content 
-        tinggal cek yg masuk apa jika type text dia masuk tulisan 
-        maka 
-        kmudian kita baut jsx disini utk check yg masuk adalah text atauy 
+      {/* yg tadi text={} di itemCreate  kita ganti dgn content
+        tinggal cek yg masuk apa jika type text dia masuk tulisan
+        maka
+        kmudian kita baut jsx disini utk check yg masuk adalah text atauy
         bukan sbnanryan kuta mengarahkan agar dia tetap jadi content sbb:
       */}
       {typeof Content === "string" ? (
-        <Text style={{ ...textStyle }}>{Content}</Text>
+        <ButtonText color={textColor} fontSize={_size}>
+          {Content}
+        </ButtonText>
       ) : (
-        <Content size={_size} color={textStyle.color} />
+        <Content size={_size} color={textColor} />
       )}
-    </Pressable>
+    </ButtonContainer>
   );
 };
+
+const ButtonContainer = styled.Pressable<{
+  isGhost: boolean;
+  backgroundColor: string;
+}>`
+  background-color: ${(p) => (p.isGhost ? "transparent" : p.backgroundColor)};
+  padding: 10px;
+  border-radius: 5px;
+`;
+
+const ButtonText = styled.Text<{ color: string; fontSize: number }>`
+  color: ${(p) => p.color};
+  font-size: ${(p) => p.fontSize}px;
+`;
 
 /*
 utk useSElect ini  props hanya supper utk web kita ubah itu code diatas utk webOnly saja!

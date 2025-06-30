@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet, TextInput } from "react-native";
+import { View, TextInput } from "react-native";
+import styled from "styled-components/native";
 import {
   FlowButton,
   FlowHighLightView,
@@ -60,41 +61,35 @@ const ItemDetail = ({
             style={{}}
             aslinya bisa di itemDetaol kita buat macam styles = StyleSheet,create tapi om pilif tidak mau 
         */}
-      <FlowButton
-        //tombolback buat modal jadi invisble/hide
-        // onPressIn={() => setShowModal(false)} <--ini sblumnya bermasalah diganti  state dari parent
-        onPressIn={onCloseDetail} // optional chaining safety
-        //invoke onCloseDetail jika props onCLoseDetail masuk
-        style={styles.backButton}
+      <BackButton
+        onPressIn={onCloseDetail}
         ghost
         type={"primary"}
         content={"Back"}
       />
       <FlowHighLightView>
         <View>
-          <FlowText style={styles.timer}>
+          <TimerText>
             {focusedItem?.isActive
               ? formatTime(time)
               : formatTime(focusedItem?.time)}
-          </FlowText>
+          </TimerText>
         </View>
         <View>
           {isEditing ? (
-            <TextInput
-              style={{ ...styles.title, ...styles.input }}
+            <InputField
               value={title}
               onChangeText={setTitle}
               placeholder="Activity name.."
               placeholderTextColor={COLORS.semiDarkGray}
             />
           ) : (
-            <FlowText style={styles.title}> {title}</FlowText>
+            <TitleText> {title}</TitleText>
           )}
         </View>
         <View>
           {isEditing ? (
-            <TextInput
-              style={{ ...styles.title, ...styles.multilineInput }}
+            <MultilineInput
               value={description}
               onChangeText={setDescription}
               placeholder="Info About Activity"
@@ -135,15 +130,12 @@ const ItemDetail = ({
         //nginvoke function delete di home,js
       />
 
-      <FlowButton
-        //triger showPrompt = true shingga COnfirmationModal visible
+      <DeleteButton
         onPressIn={() => setShowPrompt(true)}
         type={"danger"}
         content={(props) => (
-          //cara memasukan vector icon pada content pakai props
           <FontAwesome name="trash" color="black" {...props} />
         )}
-        style={styles.deleteButton}
       />
     </FlowModal>
   );
@@ -151,34 +143,38 @@ const ItemDetail = ({
 
 export default ItemDetail;
 
-const styles = StyleSheet.create({
-  backButton: {
-    marginBottom: 20,
-  },
-  deleteButton: {
-    marginTop: 10,
-    display: "flex",
-    alignItems: "center",
-  },
-  timer: {
-    color: COLORS.brightGreen,
-    marginBottom: 10,
-  },
-  title: { fontWeight: "bold" },
-  input: {
-    borderWidth: 1,
-    borderColor: COLORS.semiDarkGray,
-    borderRadius: 5,
-    padding: 10,
-    fontWeight: "500",
-    color: COLORS.white,
-  },
-  multilineInput: {
-    height: 100,
-    textAlignVertical: "top",
-    color: COLORS.white,
-  },
-});
+const BackButton = styled(FlowButton)`
+  margin-bottom: 20px;
+`;
+
+const DeleteButton = styled(FlowButton)`
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+`;
+
+const TimerText = styled(FlowText)`
+  color: ${COLORS.brightGreen};
+  margin-bottom: 10px;
+`;
+
+const TitleText = styled(FlowText)`
+  font-weight: bold;
+`;
+
+const InputField = styled.TextInput`
+  border-width: 1px;
+  border-color: ${COLORS.semiDarkGray};
+  border-radius: 5px;
+  padding: 10px;
+  font-weight: 500;
+  color: ${COLORS.white};
+`;
+
+const MultilineInput = styled(InputField)`
+  height: 100px;
+  text-align-vertical: top;
+`;
 
 /*
 utk itemDetail kita kerjakan yg sekaRANG adlah edit 
