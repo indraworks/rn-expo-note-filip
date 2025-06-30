@@ -11,6 +11,6 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
     flexDirection: "row",
-    alignmentItems: "center",
+    alignItems: "center",
   },
 });

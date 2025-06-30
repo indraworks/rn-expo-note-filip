@@ -5,7 +5,7 @@ import { FlowText, FlowHighLightView, FlowRow } from "../overrides";
 import LoadingDots from "../common/LoadingDots";
 import { formatTime } from "../../utils/Function";
 
-const TRESHOLD = 60;
+const THRESHOLD = 60;
 const TAP_DELAY = 350;
 
 //activityItem adalah item pada home pada list
@@ -24,7 +24,7 @@ export const ActivityItem = ({
   //dimana utk tentukan arah x ,arah y waktu move!
 
   //isSwiping diatruh di ref useRef biar gak re-render
-  const isSwipping = useRef(false);
+  const isSwiping = useRef(false);
   const lastPressTimeRef = useRef(0);
   const canControl = controls ?? true;
 
@@ -38,29 +38,29 @@ export const ActivityItem = ({
       //sedangkan utk evernt dia meraba apa yg jadikan suatu action agar pindah
       onPanResponderMove: (event, gestureState) => {
         //kita bisa gunakan console.log utk check pada saat di move kekanan kekiri nilai2 dx!
-        //jadi kita diatas buat const tresheold  const TRESHOLD =60 kira2 saja
+        //jadi kita diatas buat const threshold const THRESHOLD =60 kira2 saja
         //console.log(gestureState.dx); //ini kita comment saja
         //nah kita buat if utk jka  dx > trheshold yaitu geset kanan maka timer akan active
         //jika digeset kekiiri maka timer akan berhenti
         const currentX = gestureState.dx;
-        if (currentX > TRESHOLD) {
+        if (currentX > THRESHOLD) {
           //console.log("ACTIVATE TIMER"); kita ganti dgn props
           onActivityChange({ id, state: true }); //kita pakai props kita panggil function checkActivity
         }
 
         //pake Math.abs ini ktika geser kekanan,mentok! matikan scrollnya !
         //dan ktika pan-nya direalse abru scroll di hifupkan!
-        //treshold > 90 dan !isSwipping = true
+        //threshold > 90 dan !isSwiping = true
         //kmudia is isSwiping.curent  jadi true
         //dan onSwipStart
 
-        if (currentX < -TRESHOLD) {
+        if (currentX < -THRESHOLD) {
           //console.log("DE-ACTIVATE TIMER");
           onActivityChange({ id, state: false }); //kita pakai props kita panggil function checkActivity
         }
 
-        if (Math.abs(currentX) > TRESHOLD && !isSwipping.current) {
-          isSwipping.current = true;
+        if (Math.abs(currentX) > THRESHOLD && !isSwiping.current) {
+          isSwiping.current = true;
           onSwipeStart();
         }
 
@@ -74,7 +74,7 @@ export const ActivityItem = ({
       onPanResponderRelease: () => {
         //ktika kita keswipe ke kiri maka kita release
         //nah isSwipingEnd func kita invoke dan scrolled enabdle kembali
-        isSwipping.current = false;
+        isSwiping.current = false;
         onSwipeEnd();
 
         //pan.extractOffset;
@@ -131,13 +131,13 @@ export const ActivityItem = ({
         //ktika dklik gak boleh ada action
         touchAction: "none",
         //ktika ada dibagian text,di ignore textnya jadi bisa move
-        useSelect: "none",
+        userSelect: "none",
         transform: [{ translateX: pan.x }],
       }}
     >
       <FlowHighLightView
         //ini tambahan ...itemBackgroundActive akan ubah warna container jika dia bergerak kekakanan warna jadi abu muda!
-        style={{ ...StyleSheet.itemContainer, ...itemBackground }}
+        style={{ ...styles.itemContainer, ...itemBackground }}
       >
         <FlowRow style={styles.row}>
           <FlowText>{title}</FlowText>
