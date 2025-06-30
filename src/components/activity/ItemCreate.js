@@ -9,7 +9,7 @@ export const ItemCreate = ({ visible, onClose, onConfirm, fullScreen }) => {
   const [newItem, setNewItem] = useState({
     title: "",
     id: "",
-    isActivate: false,
+    isActive: false,
     time: 0,
   });
 
