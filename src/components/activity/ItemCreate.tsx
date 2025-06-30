@@ -1,4 +1,5 @@
-import { TextInput, StyleSheet, Pressable } from "react-native";
+import { Pressable } from "react-native";
+import styled from "styled-components/native";
 import { COLORS } from "../../variables/styles";
 import { FlowModal, FlowText, FlowRow, FlowButton } from "../overrides";
 import { useState } from "react";
@@ -62,13 +63,12 @@ export const ItemCreate = ({ visible, onClose, onConfirm, fullScreen }) => {
       bgColor={COLORS.semiDarkGray}
     >
       <FlowText>Choose Name of The Activity</FlowText>
-      <TextInput
+      <Input
         onChangeText={(title) => setNewItem({ ...newItem, title })}
-        style={styles.input}
         placeholder="Learn Python"
         placeholderTextColor={COLORS.semiDarkGray}
       />
-      <FlowRow style={styles.space}>
+      <StyledRow>
         <FlowButton
           disabled={isError}
           ghost
@@ -84,25 +84,24 @@ export const ItemCreate = ({ visible, onClose, onConfirm, fullScreen }) => {
           content={"Cancel"}
           onPress={cancel}
         />
-      </FlowRow>
+      </StyledRow>
     </FlowModal>
   );
 };
 
-const styles = StyleSheet.create({
-  input: {
-    color: COLORS.white,
-    height: 40,
-    borderWidth: 1,
-    padding: 10,
-    borderColor: COLORS.brightBlue,
-    borderRadius: 5,
-    marginVertical: 10,
-  },
-  space: {
-    justifyContent: "space-around",
-  },
-});
+const Input = styled.TextInput`
+  color: ${COLORS.white};
+  height: 40px;
+  border-width: 1px;
+  padding: 10px;
+  border-color: ${COLORS.brightBlue};
+  border-radius: 5px;
+  margin-vertical: 10px;
+`;
+
+const StyledRow = styled(FlowRow)`
+  justify-content: space-around;
+`;
 
 /*
 mmbuat newItem pada saat kita masukan di input nah utk itu ada functuon builtin di input 

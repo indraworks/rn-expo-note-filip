@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, SafeAreaView, View, Platform } from "react-native";
+import { Platform } from "react-native";
+import styled from "styled-components/native";
 import { ActivityHomeScreen } from "./src/screens/Home";
 import { COLORS } from "./src/variables/styles";
 import { useEffect, useState } from "react";
@@ -7,7 +8,7 @@ import { isAsyncStorageEnabled } from "./src/storage ";
 import { TutorialScreen } from "./src/screens/Tutorial";
 
 export default function App() {
-  const [isStorageEnabled, setIsStorageEnable] = useState(null);
+  const [isStorageEnabled, setIsStorageEnable] = useState<boolean | null>(null);
   //awal mula check di async sudah enable atau blum dgn buat setItem dan getItem test
   useEffect(() => {
     const checkStorage = async () => {
@@ -29,8 +30,8 @@ export default function App() {
       : {};
 
   return (
-    <SafeAreaView style={styles.safeContainer}>
-      <View style={{ ...styles.container, ...containerStyle }}>
+    <SafeContainer>
+      <Container style={containerStyle}>
         {isStorageEnabled == null ? (
           <></>
         ) : (
@@ -41,25 +42,24 @@ export default function App() {
         )}
 
         <StatusBar style="light" />
-      </View>
-    </SafeAreaView>
+      </Container>
+    </SafeContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  safeContainer: {
-    width: "100%",
-    flex: 1,
-    backgroundColor: COLORS.black,
-  },
-  container: {
-    width: "100%",
-    flex: 1,
-    padding: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+const SafeContainer = styled.SafeAreaView`
+  width: 100%;
+  flex: 1;
+  background-color: ${COLORS.black};
+`;
+
+const Container = styled.View`
+  width: 100%;
+  flex: 1;
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+`;
 
 /*
 di app js kit amasuka tutorial screen dimana  kita kasuh tahu pemakai 

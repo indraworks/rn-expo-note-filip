@@ -1,16 +1,9 @@
-import React from "react";
-import { Text, StyleSheet } from "react-native";
+import styled from "styled-components/native";
 import { COLORS } from "../../variables/styles";
 
-export const FlowText = ({ children, style }) => {
-  return <Text style={{ ...styles.text, ...style }}>{children}</Text>;
-};
-
-const styles = StyleSheet.create({
-  text: {
-    color: COLORS.white,
-  },
-});
+export const FlowText = styled.Text`
+  color: ${COLORS.white};
+`;
 /*
 maksud dibuat begini ...Style,text adalah agar  style bia di bebas di inputkan 
 utk yg ..style  props dari parent

@@ -10,7 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 //   @param {any} value - The data to be stored.
 //value disini adalah data kita
 
-const saveData = async (key, value) => {
+const saveData = async (key: string, value: any) => {
   try {
     //convert value to JSON string store in async-storage
     await AsyncStorage.setItem(key, JSON.stringify(value));
@@ -25,7 +25,7 @@ const saveData = async (key, value) => {
 //  * @param {string} key - The key under which the data is stored.
 //  * @returns {Promise<any>} - Returns the data stored for the provided key
 
-const loadData = async (key) => {
+const loadData = async (key: string) => {
   try {
     //ambil item /data dgn getItem(key) jika tidak ada maka return nul jika ada diparse nilainya
     const storeValue = await AsyncStorage.getItem(key);
@@ -36,19 +36,19 @@ const loadData = async (key) => {
   }
 };
 
-const storeDayFlowItems = async (data) => {
+const storeDayFlowItems = async (data: any) => {
   return saveData("storeDayFlowItems", data);
 };
 
 //get items /data dari storage dgn key "storeDayFlowItems"
-const loadDayFlowItems = async () => {
+const loadDayFlowItems = async (): Promise<any> => {
   return loadData("storeDayFlowItems");
 };
 
 //Ada tambahan utk pertama kali loading di APp.js kita taruh utk chgeck apakah function AsyncStorage
 //keterangna dibawah :
 
-export const isAsyncStorageEnabled = async () => {
+export const isAsyncStorageEnabled = async (): Promise<boolean> => {
   try {
     await AsyncStorage.setItem("flowTestKey", "TestValue");
     await AsyncStorage.getItem("FlowTestKey");

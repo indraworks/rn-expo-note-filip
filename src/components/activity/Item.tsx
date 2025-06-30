@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
-import { Animated, PanResponder, Platform, StyleSheet } from "react-native";
+import { Animated, PanResponder, Platform } from "react-native";
+import styled from "styled-components/native";
 import { COLORS } from "../../variables/styles";
 import { FlowText, FlowHighLightView, FlowRow } from "../overrides";
 import LoadingDots from "../common/LoadingDots";
@@ -88,9 +89,6 @@ export const ActivityItem = ({
   ).current;
 
   //kita buat disini utk background dimana akan brubah jika isACtive true !
-  const itemBackground = isActive
-    ? { backgroundColor: COLORS.semiDarkGray }
-    : { backgroundColor: COLORS.darkGray };
 
   //buat function hadnlePress yang ada  dalam Animated.View
   ////kita buat habdlePress ukt handle doubleCLick timer digunakan utk deteksi jarak
@@ -135,21 +133,18 @@ export const ActivityItem = ({
         transform: [{ translateX: pan.x }],
       }}
     >
-      <FlowHighLightView
-        //ini tambahan ...itemBackgroundActive akan ubah warna container jika dia bergerak kekakanan warna jadi abu muda!
-        style={{ ...StyleSheet.itemContainer, ...itemBackground }}
-      >
-        <FlowRow style={styles.row}>
+      <ItemContainer active={isActive}>
+        <StyledRow>
           <FlowText>{title}</FlowText>
-          <FlowText style={styles.time}>
+          <TimeText>
             {isActive ? (
               <LoadingDots color={"blue"} />
             ) : (
               <FlowText>{formatTime(time)}</FlowText>
             )}
-          </FlowText>
-        </FlowRow>
-      </FlowHighLightView>
+          </TimeText>
+        </StyledRow>
+      </ItemContainer>
     </Animated.View>
   );
 };
@@ -167,19 +162,20 @@ karena kita akan gunakan sebagi re-use component pada screen
       nah nnti itu  {...panResponder.panHandlers} kita ganti sinya jadi {...}
 */
 
-const styles = StyleSheet.create({
-  itemContainer: {
-    marginBottom: 6,
-    paddingVertical: 19,
-  },
-  row: {
-    justifyContent: "space-between",
-    paddingHorizontal: 6,
-  },
-  time: {
-    color: COLORS.brightGreen,
-  },
-});
+const ItemContainer = styled(FlowHighLightView)<{ active: boolean }>`
+  margin-bottom: 6px;
+  padding-vertical: 19px;
+  background-color: ${(p) => (p.active ? COLORS.semiDarkGray : COLORS.darkGray)};
+`;
+
+const StyledRow = styled(FlowRow)`
+  justify-content: space-between;
+  padding-horizontal: 6px;
+`;
+
+const TimeText = styled(FlowText)`
+  color: ${COLORS.brightGreen};
+`;
 
 /*
 ingat itenrary ?? 
